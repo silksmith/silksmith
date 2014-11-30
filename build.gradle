@@ -21,13 +21,11 @@ repositories {
 }
 ext{
 	 closureCompilerVersion = 'v20141120'
-	 springBootVersion = '1.2.0.RC1'
 }
 dependencies {
     compile gradleApi()
     compile localGroovy()
 
-    
     compile 'org.eclipse.jetty:jetty-server:9.3.0.M1'
 	compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.1.201410131835-r'
 	
@@ -59,6 +57,7 @@ publishing {
 			url "http://oss.jfrog.org/artifactory/oss-snapshot-local"
 			
 			credentials {
+				
 				username = bintray_net_user
 				password = bintray_net_key
 			}
@@ -72,7 +71,7 @@ bintray {
 	key = bintray_net_key
 	
 	
-	publications = ["maven"]
+	publications = ["jcenterSnapshot"]
 	pkg {
 		repo = 'maven'
 		userOrg = "silksmith-io"
