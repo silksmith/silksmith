@@ -1,0 +1,61 @@
+
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+apply plugin: 'idea'
+apply plugin: 'java'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+version = "1.0.0-SNAPSHOT"
+group = "io.silksmith"
+repositories {
+    mavenLocal()
+    mavenCentral()
+	maven {
+        url 'http://repo.spring.io/milestone'
+    }
+}
+ext{
+	 closureCompilerVersion = 'v20141120'
+	 springBootVersion = '1.2.0.RC1'
+}
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+
+	
+    
+    compile 'org.eclipse.jetty:jetty-server:9.3.0.M1'
+	compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.1.201410131835-r'
+	
+	compile "com.google.javascript:closure-compiler:$closureCompilerVersion"
+	
+	compile 'org.jruby:jruby-complete:1.7.16.1'
+
+	testCompile 'junit:junit:4.11'
+	
+	compile 'org.webjars:mocha:2.0.1-SNAPSHOT'
+	//dependencies { compile 'org.codehaus.groovy:groovy:2.3.6' }
+	//compile 'org.codehaus.groovyfx:groovyfx:0.4.0'
+
+	//compile files("${System.properties['java.home']}/lib/ext/jfxrt.jar")
+	compile 'org.seleniumhq.selenium:selenium-java:2.44.0'
+	
+	//compile 'org.tap4j:tap4j:4.1'
+}
+task wrapper(type: Wrapper) {
+	gradleVersion ="2.2.1"
+}
+
+task show() {
+	def version = System.getProperty("java.version")
+	println "version: $version"
+	
+	def javafx = Package.getPackage("javafx")
+	println "javafx: $javafx"
+	
+//	Package.getPackages().each {
+//		println it
+//	}
+}
