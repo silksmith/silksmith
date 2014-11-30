@@ -2,8 +2,6 @@
 package io.silksmith.js.closure.task
 
 
-import static groovyx.net.http.ContentType.*
-import static groovyx.net.http.Method.*
 import groovyx.net.http.*
 
 import org.gradle.util.ConfigureUtil
