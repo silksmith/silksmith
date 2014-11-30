@@ -4,6 +4,7 @@ package io.silksmith.js.closure.task
 
 
 
+import io.silksmith.SilkSmithExtension
 import io.silksmith.development.server.WorkspaceServer
 import io.silksmith.source.WebSourceSet
 
@@ -60,7 +61,7 @@ class TestJSTask extends DefaultTask {
 	@TaskAction
 	def test() {
 
-		WebSourceSet sourceSet = project.extensions.webcrafttools.source["test"]
+		WebSourceSet sourceSet = project.extensions.getByType(SilkSmithExtension).source["test"]
 
 		Configuration configuration = project.configurations["testWeb"]
 

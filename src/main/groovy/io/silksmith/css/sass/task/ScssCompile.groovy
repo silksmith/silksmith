@@ -1,7 +1,8 @@
 package io.silksmith.css.sass.task
 
-import io.silksmith.content.WebPackContent
-import io.silksmith.content.WebPackContentResolveService
+import io.silksmith.SourceLookupService
+import io.silksmith.plugin.SilkSmithBasePlugin
+import io.silksmith.source.WebSourceElements
 
 import org.gradle.process.ExecResult
 
@@ -30,20 +31,21 @@ class ScssCompile extends DefaultTask{
 	@OutputDirectory
 	def output
 
-	WebPackContentResolveService webPackContentResolveService = new WebPackContentResolveService([project:project])
 	@TaskAction
 	def compile() {
 
+
+		SourceLookupService sls = project.plugins.getPlugin(SilkSmithBasePlugin).sourceLookupService
 
 		//-I
 		def importPathsArgs = []
 		importPathsArgs = configuration.incoming.resolutionResult.allComponents.collect({ ResolvedComponentResult rcr ->
 
-			webPackContentResolveService.from(rcr.id)
+			sls.get(rcr.id)
 
-		}).collect({WebPackContent wpc ->
+		}).collect({WebSourceElements webSourceElements ->
 
-			wpc.scssDirectory
+			webSourceElements.scssDirs
 		}).collect({Set<File> set ->
 			set.collect({
 				["-I", it.path]
@@ -60,6 +62,7 @@ class ScssCompile extends DefaultTask{
 		sassArgs += importPathsArgs
 
 		sassArgs << "$input:$output"
+
 		ExecResult result = project.javaexec({
 			main = "org.jruby.Main"
 			classpath = jrubyConfig

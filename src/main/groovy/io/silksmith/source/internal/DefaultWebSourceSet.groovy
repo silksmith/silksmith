@@ -2,7 +2,7 @@ package io.silksmith.source.internal
 
 import io.silksmith.source.WebSourceSet
 
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import org.gradle.internal.reflect.Instantiator
 import org.gradle.util.ConfigureUtil
 import org.gradle.util.GUtil

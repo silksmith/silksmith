@@ -1,14 +1,19 @@
-
+plugins {
+	id "com.jfrog.bintray" version "0.6"
+}
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'idea'
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+
 version = "1.0.0-SNAPSHOT"
 group = "io.silksmith"
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -24,7 +29,6 @@ dependencies {
     compile gradleApi()
     compile localGroovy()
 
-	
     
     compile 'org.eclipse.jetty:jetty-server:9.3.0.M1'
 	compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.1.201410131835-r'
@@ -36,26 +40,50 @@ dependencies {
 	testCompile 'junit:junit:4.11'
 	
 	compile 'org.webjars:mocha:2.0.1-SNAPSHOT'
-	//dependencies { compile 'org.codehaus.groovy:groovy:2.3.6' }
-	//compile 'org.codehaus.groovyfx:groovyfx:0.4.0'
 
-	//compile files("${System.properties['java.home']}/lib/ext/jfxrt.jar")
 	compile 'org.seleniumhq.selenium:selenium-java:2.44.0'
 	
-	//compile 'org.tap4j:tap4j:4.1'
+
 }
 task wrapper(type: Wrapper) {
 	gradleVersion ="2.2.1"
 }
+publishing {
+	publications {
+		mavenSnapshot(MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+			name 'jcenterSnapshot'
+			// change to point to your repo, e.g. http://my.org/repo
+			url "http://oss.jfrog.org/artifactory/oss-snapshot-local"
+			
+			credentials {
+				username = bintray_net_user
+				password = bintray_net_key
+			}
+		}
+	}
+}
 
-task show() {
-	def version = System.getProperty("java.version")
-	println "version: $version"
+bintray {
+		
+	user = bintray_net_user
+	key = bintray_net_key
 	
-	def javafx = Package.getPackage("javafx")
-	println "javafx: $javafx"
 	
-//	Package.getPackages().each {
-//		println it
-//	}
+	publications = ["maven"]
+	pkg {
+		repo = 'maven'
+		userOrg = "silksmith-io"
+		name = "silksmith"
+		websiteUrl = 'https://github.com/silksmith/silksmith'
+		issueTrackerUrl = 'https://github.com/silksmith/silksmith/issues'
+		vcsUrl = 'https://github.com/silksmith/silksmith.git'
+		licenses = ['MIT']
+		publicDownloadNumbers = true
+		
+	}
 }

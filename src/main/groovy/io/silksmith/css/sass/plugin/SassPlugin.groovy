@@ -5,7 +5,7 @@ import io.silksmith.css.sass.task.GemInstallTask
 import io.silksmith.css.sass.task.ScssCompile
 import io.silksmith.source.WebSourceSet
 
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

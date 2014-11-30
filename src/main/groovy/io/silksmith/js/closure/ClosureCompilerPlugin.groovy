@@ -6,7 +6,7 @@ import io.silksmith.source.WebSourceSet
 
 import javax.inject.Inject
 
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import org.gradle.internal.reflect.Instantiator
 
 import org.gradle.api.Plugin
@@ -37,7 +37,7 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 				source  sourceSet.dependencyJSPath
 				sourceSet.js.srcDirs.each { source it }
 
-				dest = "$project.buildDir/compiled/$sourceSetConfigurationName/app.js"
+				dest = "$project.buildDir/compiled/$sourceSetConfigurationName/${project.name}.js"
 			}
 		}
 	}

@@ -1,6 +1,7 @@
 package io.silksmith.development.server.closure
 
 import io.silksmith.SilkModuleCacheUtil
+import io.silksmith.SilkSmithExtension
 import io.silksmith.development.server.files.FilePathBuilder
 import io.silksmith.js.closure.DepsParser
 import io.silksmith.js.closure.FileInfo
@@ -73,7 +74,7 @@ class DepsJSHandler extends AbstractHandler {
 				ProjectComponentIdentifier projectComponentId = it.id
 
 				Project otherProject =  project.findProject(projectComponentId.projectPath)
-				WebSourceSet wss = otherProject.extensions.webcrafttools.source[sourceSetName]
+				WebSourceSet wss = otherProject.extensions.getByType(SilkSmithExtension).source[sourceSetName]
 				SourceDirectorySet dirSet = wss.js
 
 				dirSet.srcDirs.unique().sort().eachWithIndex { srcDir,index ->

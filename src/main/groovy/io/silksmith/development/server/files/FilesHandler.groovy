@@ -1,5 +1,6 @@
 package io.silksmith.development.server.files
 
+import io.silksmith.SilkSmithExtension
 import io.silksmith.content.WebPackContentResolveService
 import io.silksmith.source.WebSourceSet
 
@@ -7,6 +8,7 @@ import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+import org.apache.ivy.core.cache.CacheUtil
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.handler.AbstractHandler
 
@@ -38,7 +40,7 @@ class FilesHandler extends AbstractHandler{
 
 
 			Project p = project.findProject(projectPath)
-			WebSourceSet ws = p.extensions.webcrafttools.source[sourceSetName]
+			WebSourceSet ws = p.extensions.getByType(SilkSmithExtension).source[sourceSetName]
 			SourceDirectorySet sds = ws[sourceType]
 
 			def srcDirList = sds.srcDirs.unique().sort()

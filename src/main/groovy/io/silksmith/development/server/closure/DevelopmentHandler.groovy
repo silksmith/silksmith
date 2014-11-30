@@ -1,5 +1,6 @@
 package io.silksmith.development.server.closure
 
+import io.silksmith.SilkSmithExtension
 import io.silksmith.content.WebPackContent
 import io.silksmith.content.WebPackContentResolveService
 import io.silksmith.development.server.files.FilePathBuilder
@@ -9,6 +10,7 @@ import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+import org.apache.ivy.core.cache.CacheUtil
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.handler.AbstractHandler
 import org.slf4j.LoggerFactory
@@ -108,7 +110,7 @@ document.write('<script>goog.require("$entryPoint")</script>');
 					//builder.staticsPathFor(it,
 					Project otherProject = project.findProject(cId.projectPath)
 
-					WebSourceSet wss = otherProject.extensions.webcrafttools.source[otherProjectSourceSetName]
+					WebSourceSet wss = otherProject.extensions.getByType(SilkSmithExtension).source[otherProjectSourceSetName]
 
 					def allStatics = wss.statics.files
 

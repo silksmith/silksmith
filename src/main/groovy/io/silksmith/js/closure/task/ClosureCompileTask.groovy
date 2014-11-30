@@ -2,8 +2,6 @@
 package io.silksmith.js.closure.task
 
 
-import groovyx.net.http.*
-
 import org.gradle.util.ConfigureUtil
 
 import com.google.javascript.jscomp.CompilationLevel

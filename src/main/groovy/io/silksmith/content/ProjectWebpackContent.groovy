@@ -1,5 +1,6 @@
 package io.silksmith.content
 
+import io.silksmith.SilkSmithExtension
 import io.silksmith.source.WebSourceSet
 
 import org.gradle.api.Project
@@ -17,21 +18,21 @@ class ProjectWebpackContent implements WebPackContent {
 	public Set<File> getJSDirectory() {
 
 		Project p = project.project(id.projectPath)
-		WebSourceSet ws = p.extensions.webcrafttools.source[sourceSetName]
+		WebSourceSet ws = p.extensions.getByType(SilkSmithExtension).source[sourceSetName]
 		ws.js.srcDirs
 	}
 
 	@Override
 	public Set<File> getStaticsDirectory() {
 		Project p = project.project(id.projectPath)
-		WebSourceSet ws = p.extensions.webcrafttools.source[sourceSetName]
+		WebSourceSet ws = p.extensions.getByType(SilkSmithExtension).source[sourceSetName]
 		ws.statics.srcDirs
 	}
 
 	@Override
 	public Set<File> getScssDirectory() {
 		Project p = project.project(id.projectPath)
-		WebSourceSet ws = p.extensions.webcrafttools.source[sourceSetName]
+		WebSourceSet ws = p.extensions.getByType(SilkSmithExtension).source[sourceSetName]
 		ws.scss.srcDirs
 	}
 }

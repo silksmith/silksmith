@@ -1,6 +1,7 @@
 
 package io.silksmith.plugin
 
+import io.silksmith.SilkSmithExtension
 import io.silksmith.SilkSmithLibrary
 import io.silksmith.bundling.task.SilkArchive
 import io.silksmith.css.sass.plugin.SassPlugin
@@ -65,7 +66,7 @@ class SilkSmithPlugin implements Plugin<Project> {
 		testConfig.extendsFrom mainConfig
 	}
 	WebSourceSet createSourceSet(Project project, name) {
-		WebSourceSetContainer container = project.extensions.webcrafttools.source
+		WebSourceSetContainer container = project.extensions.getByType(SilkSmithExtension).source
 		container.create(name)
 	}
 	void applyTasks(final Project project) {
@@ -111,11 +112,12 @@ class SilkSmithPlugin implements Plugin<Project> {
 		ArchivePublishArtifact artifact = new ArchivePublishArtifact(pack)
 		Configuration configuration = project.configurations.getByName(CONFIGURATION_NAME)
 
+
 		configuration.artifacts.add(artifact)
 		project.extensions.getByType(DefaultArtifactPublicationSet).addCandidate(artifact)
 		project.components.add(new SilkSmithLibrary(artifact, configuration.allDependencies))
 	}
 	def getMainSourceSet(Project project) {
-		project.extensions.webcrafttools.source.getByName(SourceSet.MAIN_SOURCE_SET_NAME)
+		project.extensions.getByType(SilkSmithExtension).source.getByName(SourceSet.MAIN_SOURCE_SET_NAME)
 	}
 }

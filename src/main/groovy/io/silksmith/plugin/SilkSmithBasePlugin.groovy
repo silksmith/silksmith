@@ -4,13 +4,14 @@ package io.silksmith.plugin
 import io.silksmith.Constants
 import io.silksmith.EnsureExtractedArtifactsTask
 import io.silksmith.SilkSmithExtension
+import io.silksmith.SourceLookupService
 import io.silksmith.WebDependencyFileCollection
 import io.silksmith.content.WebPackContentResolveService
 import io.silksmith.source.WebSourceSet
 
 import javax.inject.Inject
 
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import org.gradle.internal.reflect.Instantiator
 
 import org.gradle.api.Plugin
@@ -25,6 +26,8 @@ class SilkSmithBasePlugin implements Plugin<Project> {
 	private final Instantiator instantiator
 	private final FileResolver fileResolver
 
+
+	SourceLookupService sourceLookupService
 
 	final static SRC_FOLDER_NAME = "src"
 
@@ -45,6 +48,7 @@ class SilkSmithBasePlugin implements Plugin<Project> {
 	void apply(final Project project) {
 
 
+		this.sourceLookupService = new SourceLookupService([project:project, fileResolver:fileResolver])
 
 		project.plugins.apply(BasePlugin)
 		webPackContentResolveService = new WebPackContentResolveService([project:project])

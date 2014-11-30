@@ -1,6 +1,7 @@
 package io.silksmith.development.server.js.test
 
 import groovy.json.JsonBuilder
+import io.silksmith.SilkSmithExtension
 import io.silksmith.development.server.files.FilePathBuilder
 import io.silksmith.source.WebSourceSet
 
@@ -34,7 +35,7 @@ class MochaHandler extends AbstractHandler{
 
 		if(target == "/TEST/MOCHA") {
 
-			WebSourceSet testSourceSet = project.extensions.webcrafttools.source[sourceSetName]
+			WebSourceSet testSourceSet = project.extensions.getByType(SilkSmithExtension).source[sourceSetName]
 			FilePathBuilder filePathBuilder = new FilePathBuilder([project:project])
 
 			def paths = []
