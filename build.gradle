@@ -15,11 +15,9 @@ version = "1.0.0-SNAPSHOT"
 group = "io.silksmith"
 
 repositories {
-    mavenLocal()
+    
     mavenCentral()
-	maven {
-        url 'http://repo.spring.io/milestone'
-    }
+	
 }
 ext{
 	 closureCompilerVersion = 'v20141120'
