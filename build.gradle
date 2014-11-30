@@ -37,7 +37,7 @@ dependencies {
 
 	testCompile 'junit:junit:4.11'
 	
-	compile 'org.webjars:mocha:2.0.1-SNAPSHOT'
+	compile 'org.webjars:mocha:2.0.1'
 
 	compile 'org.seleniumhq.selenium:selenium-java:2.44.0'
 	
