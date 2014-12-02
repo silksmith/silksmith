@@ -1,5 +1,7 @@
 package io.silksmith
 
+import io.silksmith.plugin.SilkSmithExtension;
+import io.silksmith.source.ModuleWebSourceElements;
 import io.silksmith.source.WebSourceElements
 import io.silksmith.source.WebSourceSet
 

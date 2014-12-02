@@ -4,8 +4,9 @@ package io.silksmith.js.closure.task
 
 
 
-import io.silksmith.SilkSmithExtension
+import io.silksmith.SourceLookupService
 import io.silksmith.development.server.WorkspaceServer
+import io.silksmith.plugin.SilkSmithExtension
 import io.silksmith.source.WebSourceSet
 
 import java.nio.file.FileSystems
@@ -57,6 +58,7 @@ class TestJSTask extends DefaultTask {
 }(mocha.suite));
 """
 
+	SourceLookupService sourceLookupService
 	boolean watch = false
 	@TaskAction
 	def test() {
@@ -67,7 +69,7 @@ class TestJSTask extends DefaultTask {
 
 		configuration.each { println "TEST $it" }
 
-		def server = new WorkspaceServer([project:project, sourceSet: sourceSet, configuration:configuration, resourceBase : project.projectDir])
+		def server = new WorkspaceServer([project:project, sourceSet: sourceSet, configuration:configuration, resourceBase : project.projectDir,sourceLookupService:sourceLookupService])
 
 		server.start()
 

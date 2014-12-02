@@ -2,5 +2,5 @@ package io.silksmith
 
 enum SourceType {
 
-	js, statics, scss
+	js, statics, scss, externs
 }

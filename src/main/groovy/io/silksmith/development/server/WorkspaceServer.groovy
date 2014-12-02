@@ -1,6 +1,6 @@
 package io.silksmith.development.server
 
-import io.silksmith.content.WebPackContentResolveService
+import io.silksmith.SourceLookupService
 import io.silksmith.development.server.closure.DepsJSHandler
 import io.silksmith.development.server.closure.DevelopmentHandler
 import io.silksmith.development.server.files.FilesHandler
@@ -28,7 +28,7 @@ class WorkspaceServer {
 
 	Configuration configuration
 
-
+	SourceLookupService sourceLookupService
 	private Server server
 
 	private static final Logger logger = LoggerFactory.getLogger(WorkspaceServer)
@@ -40,18 +40,14 @@ class WorkspaceServer {
 	}
 	void start() {
 
-		WebPackContentResolveService webPackContentResolveService = new WebPackContentResolveService([project:project])
 
 
 		HandlerList handlerList = new HandlerList()
-
 		def handlers = []
 
+		handlers << new FilesHandler([project:project])
 
-		handlers << new FilesHandler([project:project,webPackContentResolveService:webPackContentResolveService])
-
-
-		def developmentHandler = new DevelopmentHandler([project:project,webPackContentResolveService:webPackContentResolveService, configuration:configuration])
+		def developmentHandler = new DevelopmentHandler([project:project, configuration:configuration, sourceLookupService:sourceLookupService])
 		handlers << developmentHandler
 
 		def depsJSHandler = new DepsJSHandler([project:project, configuration:configuration])

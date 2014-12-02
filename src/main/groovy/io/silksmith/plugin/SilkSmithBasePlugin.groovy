@@ -3,10 +3,9 @@ package io.silksmith.plugin
 
 import io.silksmith.Constants
 import io.silksmith.EnsureExtractedArtifactsTask
-import io.silksmith.SilkSmithExtension
 import io.silksmith.SourceLookupService
-import io.silksmith.WebDependencyFileCollection
-import io.silksmith.content.WebPackContentResolveService
+import io.silksmith.SourceType
+import io.silksmith.source.WebDependencyFileCollection
 import io.silksmith.source.WebSourceSet
 
 import javax.inject.Inject
@@ -33,10 +32,11 @@ class SilkSmithBasePlugin implements Plugin<Project> {
 
 
 	final static JS_FOLDER_NAME = Constants.SRC_TYPE_JS
+	final static EXTERNS_FOLDER_NAME = Constants.SRC_TYPE_EXTERNS
 	final static STATICS_FOLDER_NAME = Constants.SRC_TYPE_STATICS
 	final static SCSS_FOLDER_NAME = Constants.SRC_TYPE_SCSS
 
-	WebPackContentResolveService webPackContentResolveService
+
 	@Inject
 	public SilkSmithBasePlugin(Instantiator instantiator, FileResolver fileResolver) {
 
@@ -51,7 +51,7 @@ class SilkSmithBasePlugin implements Plugin<Project> {
 		this.sourceLookupService = new SourceLookupService([project:project, fileResolver:fileResolver])
 
 		project.plugins.apply(BasePlugin)
-		webPackContentResolveService = new WebPackContentResolveService([project:project])
+
 		SilkSmithExtension ext = project.extensions.create(SilkSmithExtension.NAME, SilkSmithExtension, project, instantiator, fileResolver)
 
 		ext.source.all { WebSourceSet sourceSet ->
@@ -64,14 +64,15 @@ class SilkSmithBasePlugin implements Plugin<Project> {
 				config = project.configurations.create(sourceSetConfigurationName)
 			}
 			sourceSet.js.srcDir "$SRC_FOLDER_NAME/$sourceSet.name/$JS_FOLDER_NAME"
+			sourceSet.externs.srcDir "$SRC_FOLDER_NAME/$sourceSet.name/$EXTERNS_FOLDER_NAME"
 			sourceSet.statics.srcDir "$SRC_FOLDER_NAME/$sourceSet.name/$STATICS_FOLDER_NAME"
 			sourceSet.scss.srcDir "$SRC_FOLDER_NAME/$sourceSet.name/$SCSS_FOLDER_NAME"
 
-			sourceSet.dependencyJSPath = new WebDependencyFileCollection(config, project)
+			sourceSet.dependencyJSPath = new WebDependencyFileCollection(config, sourceLookupService, SourceType.js)
 
 			sourceSet.runtimeJSPath = sourceSet.dependencyJSPath + sourceSet.js
 
-			project.task(getSourceSetNamedTask(sourceSet, ENSURE_EXTRACTED_ARTIFACTS), type: EnsureExtractedArtifactsTask ){ configuration  = config }
+			EnsureExtractedArtifactsTask ensureExtractedArtifactsTask = project.task(getSourceSetNamedTask(sourceSet, ENSURE_EXTRACTED_ARTIFACTS), type: EnsureExtractedArtifactsTask ){ configuration  = config }
 		}
 	}
 

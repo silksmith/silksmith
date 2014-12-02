@@ -1,13 +1,13 @@
 
 package io.silksmith.plugin
 
-import io.silksmith.SilkSmithExtension
-import io.silksmith.SilkSmithLibrary
+import io.silksmith.SourceLookupService
 import io.silksmith.bundling.task.SilkArchive
 import io.silksmith.css.sass.plugin.SassPlugin
 import io.silksmith.development.task.WorkspaceServerTask
 import io.silksmith.js.closure.ClosureCompilerPlugin
 import io.silksmith.js.closure.task.TestJSTask
+import io.silksmith.publishing.SilkSmithLibrary
 import io.silksmith.source.WebSourceSet
 import io.silksmith.source.WebSourceSetContainer
 
@@ -35,9 +35,9 @@ class SilkSmithPlugin implements Plugin<Project> {
 
 	WebSourceSet main
 	WebSourceSet test
-	private final static String CLOSURE_BASE_JS_DEPENDENCY = "closure-base"
 
 
+	SourceLookupService sourceLookupService
 
 	@Inject
 	public SilkSmithPlugin(Instantiator instantiator, FileResolver fileResolver) {
@@ -51,6 +51,7 @@ class SilkSmithPlugin implements Plugin<Project> {
 		project.apply plugin:SassPlugin
 
 
+		sourceLookupService = project.plugins.getPlugin(SilkSmithBasePlugin).sourceLookupService
 		configureSourceSets(project)
 
 		configureArchivesAndComponent(project)
@@ -71,32 +72,32 @@ class SilkSmithPlugin implements Plugin<Project> {
 	}
 	void applyTasks(final Project project) {
 
-		def compiledJSName = "${project.name}.js"
 
 		def config = project.configurations.getByName(CONFIGURATION_NAME)
-
 		def mainSourceSet = getMainSourceSet(project)
 
 		project.task('server', type: WorkspaceServerTask, group: 'Development', description: 'Servers all required dependencies') {
 			sourceSet = mainSourceSet
 			configuration = config
-			dependsOn "ensureExtractedArtifacts"
+			dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(main, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
+			sourceLookupService = sourceLookupService
 		}
-
 
 		project.task("testJS", type: TestJSTask){
 			dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(test, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
+			sourceLookupService = sourceLookupService
 		}
 		project.task("watchTestJS", type: TestJSTask){
 			watch = true
 			dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(test, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
 		}
+
+		//set default task
+		project.defaultTasks SilkSmithBasePlugin.getSourceSetNamedTask(main, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
 	}
 
 
 	private void configureArchivesAndComponent(final Project project) {
-
-
 
 		SilkArchive pack = project.tasks.create("pack", SilkArchive)
 		pack.setGroup(BasePlugin.BUILD_GROUP)
@@ -108,10 +109,10 @@ class SilkSmithPlugin implements Plugin<Project> {
 		pack.js{ from mainSourceSet.js }
 		pack.statics { from mainSourceSet.statics }
 		pack.scss  { from mainSourceSet.scss }
+		pack.externs  { from mainSourceSet.externs }
 
 		ArchivePublishArtifact artifact = new ArchivePublishArtifact(pack)
 		Configuration configuration = project.configurations.getByName(CONFIGURATION_NAME)
-
 
 		configuration.artifacts.add(artifact)
 		project.extensions.getByType(DefaultArtifactPublicationSet).addCandidate(artifact)

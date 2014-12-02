@@ -1,8 +1,8 @@
 package io.silksmith.development.server.js.test
 
 import groovy.json.JsonBuilder
-import io.silksmith.SilkSmithExtension
 import io.silksmith.development.server.files.FilePathBuilder
+import io.silksmith.plugin.SilkSmithExtension;
 import io.silksmith.source.WebSourceSet
 
 import javax.servlet.ServletException

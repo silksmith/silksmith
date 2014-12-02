@@ -1,4 +1,4 @@
-package io.silksmith;
+package io.silksmith.publishing;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;

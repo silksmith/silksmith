@@ -22,6 +22,8 @@ class DefaultWebSourceSet implements WebSourceSet {
 	private final String name
 	private final String displayName
 	private final DefaultSourceDirectorySet js
+	private final DefaultSourceDirectorySet externs
+
 	private final DefaultSourceDirectorySet statics
 	private final DefaultSourceDirectorySet scss
 
@@ -33,6 +35,7 @@ class DefaultWebSourceSet implements WebSourceSet {
 		this.name = name
 		this.displayName = GUtil.toWords(name)
 		this.js = new DefaultSourceDirectorySet(name, String.format("%s JavaScript source", displayName), fileResolver)
+		this.externs = new DefaultSourceDirectorySet(name, String.format("%s JavaScript Externs source", displayName), fileResolver)
 		this.scss = new DefaultSourceDirectorySet(name, String.format("%s SCSS source", displayName), fileResolver)
 		this.statics = new DefaultSourceDirectorySet(name, String.format("%s Statics source", displayName), fileResolver)
 	}
@@ -50,6 +53,13 @@ class DefaultWebSourceSet implements WebSourceSet {
 		js
 	}
 
+	SourceDirectorySet getExterns() {
+		externs
+	}
+	SourceDirectorySet externs(Action<SourceDirectorySet> action) {
+		action.execute(externs)
+		externs
+	}
 
 	SourceDirectorySet getScss() {
 		scss
@@ -114,5 +124,10 @@ class DefaultWebSourceSet implements WebSourceSet {
 	@Override
 	public Set<File> getScssDirs() {
 		return this.scss.srcDirs
+	}
+
+	@Override
+	public Set<File> getExternsDirs() {
+		return this.externs.srcDirs
 	}
 }

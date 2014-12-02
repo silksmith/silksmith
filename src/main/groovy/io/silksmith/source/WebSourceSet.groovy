@@ -10,15 +10,15 @@ import org.gradle.api.file.SourceDirectorySet
 interface WebSourceSet extends Named, Configurable<WebSourceSet>,WebSourceElements {
 
 	SourceDirectorySet getScss()
-
 	SourceDirectorySet scss(Action<SourceDirectorySet> action)
 
 	SourceDirectorySet getJs()
-
 	SourceDirectorySet js(Action<SourceDirectorySet> action)
 
-	SourceDirectorySet getStatics()
+	SourceDirectorySet getExterns()
+	SourceDirectorySet externs(Action<SourceDirectorySet> action)
 
+	SourceDirectorySet getStatics()
 	SourceDirectorySet statics(Action<SourceDirectorySet> action)
 
 

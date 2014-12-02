@@ -8,23 +8,25 @@ import org.gradle.api.artifacts.ResolvedArtifact
 
 class DefaultExtraArtifactService implements ExtractedArtifactService {
 
-	public void ensurePackage(Project p, ResolvedArtifact resolvedArtifact) {
+	Project project
+
+	public void ensurePackage(ResolvedArtifact resolvedArtifact) {
 
 		if(!resolvedArtifact.file.exists()) {
 			throw new GradleException("File of $resolvedArtifact does not exist")
 		}
 
 		ModuleVersionIdentifier id = resolvedArtifact.moduleVersion.id
-		File pathFile = p.file(SilkModuleCacheUtil.pathInCache(id.group, id.name, id.version))
+		File pathFile = project.file(SilkModuleCacheUtil.pathInCache(id.group, id.name, id.version))
 
 		if(pathFile.exists()) {
 			pathFile.delete()
 		}
-		p.delete(pathFile)
+		project.delete(pathFile)
 		pathFile.mkdirs()
 
-		p.copy {
-			from p.zipTree(resolvedArtifact.file)
+		project.copy {
+			from project.zipTree(resolvedArtifact.file)
 			into pathFile
 		}
 	}

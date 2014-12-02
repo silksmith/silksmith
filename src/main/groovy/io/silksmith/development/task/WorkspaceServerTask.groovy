@@ -1,5 +1,6 @@
 package io.silksmith.development.task
 
+import io.silksmith.SourceLookupService
 import io.silksmith.development.server.WorkspaceServer
 import io.silksmith.source.WebSourceSet
 
@@ -16,10 +17,11 @@ class WorkspaceServerTask extends DefaultTask{
 
 	WebSourceSet sourceSet
 	Configuration configuration
+	SourceLookupService sourceLookupService
 	@TaskAction
 	def start(){
 
-		def server = new WorkspaceServer([project:project, sourceSet: sourceSet, configuration:configuration, resourceBase: project.projectDir])
+		def server = new WorkspaceServer([project:project, sourceSet: sourceSet, configuration:configuration, resourceBase: project.projectDir, sourceLookupService:sourceLookupService])
 
 		server.start()
 		server.join()

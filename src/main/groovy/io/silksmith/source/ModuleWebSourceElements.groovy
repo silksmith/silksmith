@@ -1,6 +1,6 @@
-package io.silksmith
+package io.silksmith.source
 
-import io.silksmith.source.WebSourceElements;
+import io.silksmith.SilkModuleCacheUtil;
 
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.file.FileCollection
@@ -44,5 +44,16 @@ class ModuleWebSourceElements implements WebSourceElements{
 	public Set<File> getStaticsDirs() {
 		return [
 			resolver.resolve(SilkModuleCacheUtil.staticsPathInCache(id))] as Set
+	}
+
+	@Override
+	public FileCollection getExterns() {
+		return resolver.resolveFilesAsTree(SilkModuleCacheUtil.externsPathInCache(id))
+	}
+
+	@Override
+	public Set<File> getExternsDirs() {
+		return [
+			resolver.resolve(SilkModuleCacheUtil.externsPathInCache(id))] as Set
 	}
 }

@@ -1,4 +1,4 @@
-package io.silksmith
+package io.silksmith.plugin
 
 
 import io.silksmith.source.WebSourceSetContainer

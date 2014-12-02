@@ -1,8 +1,8 @@
 package io.silksmith.css.sass.plugin
 
-import io.silksmith.SilkSmithExtension
 import io.silksmith.css.sass.task.GemInstallTask
 import io.silksmith.css.sass.task.ScssCompile
+import io.silksmith.plugin.SilkSmithExtension;
 import io.silksmith.source.WebSourceSet
 
 import org.apache.commons.lang3.StringUtils

@@ -1,7 +1,6 @@
 package io.silksmith.development.server.files
 
-import io.silksmith.SilkSmithExtension
-import io.silksmith.content.WebPackContentResolveService
+import io.silksmith.plugin.SilkSmithExtension
 import io.silksmith.source.WebSourceSet
 
 import javax.servlet.ServletException
@@ -19,7 +18,7 @@ class FilesHandler extends AbstractHandler{
 
 	Project project
 
-	WebPackContentResolveService webPackContentResolveService
+
 
 	def pathPatternProject = ~/\/FILES\/project\/([^\/\s]*)\/(\w+)\/(\w+)\/(\d+)\/(.*)/
 	def pathPatternModule = ~/\/FILES\/module\/([^\/\s]*)\/([^\/\s]*)\/([^\/\s]*)\/(\w+)\/(.*)/

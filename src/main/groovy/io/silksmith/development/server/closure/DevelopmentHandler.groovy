@@ -1,16 +1,14 @@
 package io.silksmith.development.server.closure
 
-import io.silksmith.SilkSmithExtension
-import io.silksmith.content.WebPackContent
-import io.silksmith.content.WebPackContentResolveService
+import io.silksmith.SourceLookupService
 import io.silksmith.development.server.files.FilePathBuilder
+import io.silksmith.source.WebSourceElements
 import io.silksmith.source.WebSourceSet
 
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-import org.apache.ivy.core.cache.CacheUtil
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.handler.AbstractHandler
 import org.slf4j.LoggerFactory
@@ -45,8 +43,8 @@ document.write('<script>goog.require("$entryPoint")</script>');
 	Configuration configuration
 
 	Project project
-	WebPackContentResolveService webPackContentResolveService = new WebPackContentResolveService([project:project])
 
+	SourceLookupService sourceLookupService
 
 	FilePathBuilder builder = new FilePathBuilder([project:project])
 
@@ -60,13 +58,9 @@ document.write('<script>goog.require("$entryPoint")</script>');
 
 		if("/DEVELOPMENT" == target) {
 
-
-			println "EXCLUDE:"
 			def staticExcludes = baseRequest.parameterMap["statics.exclude"]
 			def staticsExcludeJS = "JS" in staticExcludes
 			def staticsExcludeCSS = "CSS" in staticExcludes
-
-			println "staticExcludesCSS $staticsExcludeCSS"
 
 
 			def writeDocumentWritePath = {String path ->
@@ -82,9 +76,6 @@ document.write('<script>goog.require("$entryPoint")</script>');
 			response.setContentType('application/javascript')
 			response.writer << CLOSURE_SETTINGS.call()
 			ResolvedComponentResult rootDependency = configuration.incoming.resolutionResult.root
-
-
-
 
 			def recursiveAdd
 			def list = [] as Set
@@ -103,42 +94,8 @@ document.write('<script>goog.require("$entryPoint")</script>');
 
 			list.collect(toId).each { ComponentIdentifier cId ->
 
-				println "writing paths for $cId"
-				WebPackContent content = webPackContentResolveService.from(cId)
-
-				if(cId instanceof ProjectComponentIdentifier) {
-					//builder.staticsPathFor(it,
-					Project otherProject = project.findProject(cId.projectPath)
-
-					WebSourceSet wss = otherProject.extensions.getByType(SilkSmithExtension).source[otherProjectSourceSetName]
-
-					def allStatics = wss.statics.files
-
-					content.staticsDirectory.unique().sort().eachWithIndex {dir, index->
-
-
-						println "[$index] $dir"
-						project.fileTree(dir).each { file ->
-							if(allStatics.contains(file)) {
-								def path  = builder.staticsPathFor(cId,wss,dir, index, file)
-								writeDocumentWritePath(path)
-							}
-
-						}
-
-					}
-				}else if(cId instanceof ModuleComponentIdentifier){
-
-					def dir =project.file( CacheUtil.staticsPathInCache(cId))
-					project.fileTree(dir).each {
-
-						def path = builder.staticsPathFor(cId, it)
-
-						writeDocumentWritePath( path)
-					}
-
-				}
-
+				WebSourceElements webSources = sourceLookupService.get(cId)
+				handleComponent(cId, webSources, writeDocumentWritePath)
 
 			}
 
@@ -150,5 +107,26 @@ document.write('<script>goog.require("$entryPoint")</script>');
 		}
 
 
+	}
+
+	private handleComponent(ModuleComponentIdentifier cId, WebSourceElements webSources, Closure writeDocumentWritePath) {
+		webSources.statics.each {
+			def path = builder.staticsPathFor(cId, it)
+			writeDocumentWritePath( path)
+		}
+	}
+
+	private handleComponent(ProjectComponentIdentifier cId, WebSourceSet webSources, Closure writeDocumentWritePath) {
+
+		def statics = webSources.statics
+		webSources.staticsDirs.unique().sort().eachWithIndex {dir, index->
+			project.fileTree(dir).each { file ->
+				if(statics.contains(file)) {
+					def path  = builder.staticsPathFor(cId,webSources,dir, index, file)
+					writeDocumentWritePath(path)
+				}
+			}
+
+		}
 	}
 }

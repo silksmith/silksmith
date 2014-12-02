@@ -1,10 +1,8 @@
-package io.silksmith
+package io.silksmith.source
 
-import io.silksmith.content.WebPackContentResolveService
-import io.silksmith.plugin.SilkSmithBasePlugin
-import io.silksmith.source.WebSourceElements
+import io.silksmith.SourceLookupService
+import io.silksmith.SourceType
 
-import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.result.ResolvedComponentResult
 import org.gradle.api.file.FileCollection
@@ -17,15 +15,15 @@ class WebDependencyFileCollection extends FileCollectionAdapter{
 
 	private Configuration configuration
 
-	WebDependencyFileCollection(Configuration configuration, Project project) {
+	WebDependencyFileCollection(Configuration configuration, SourceLookupService sourceLookupService, SourceType type) {
 
-		super(new WebDepFileSet([configuration: configuration, project: project]))
+		super(new WebDepFileSet([configuration: configuration, sourceLookupService: sourceLookupService, type:type]))
 	}
 
 	static class WebDepFileSet implements MinimalFileSet{
-
+		SourceType type
 		Configuration configuration
-		Project project
+		SourceLookupService sourceLookupService
 
 
 		@Override
@@ -36,19 +34,15 @@ class WebDependencyFileCollection extends FileCollectionAdapter{
 		@Override
 		public Set<File> getFiles() {
 
-			WebPackContentResolveService webPackContentResolveService = new WebPackContentResolveService([project:project])
+			def components = configuration.incoming.resolutionResult.allComponents - configuration.incoming.resolutionResult.root
 
-			def allComps = configuration.incoming.resolutionResult.allComponents - configuration.incoming.resolutionResult.root
-
-			SourceLookupService sourceLookupService = project.plugins.findPlugin(SilkSmithBasePlugin).sourceLookupService
-
-			FileCollection[] colllections = allComps.collect { ResolvedComponentResult r ->
+			FileCollection[] colllections = components.collect { ResolvedComponentResult r ->
 
 				WebSourceElements source = sourceLookupService.get(r.id)
-
-				source.js
+				source[type.name()]
 			}
 			UnionFileCollection union = new UnionFileCollection(colllections)
+
 			return union.files
 		}
 	}

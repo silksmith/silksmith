@@ -1,7 +1,8 @@
 package io.silksmith.js.closure
 
-import io.silksmith.SilkSmithExtension
 import io.silksmith.js.closure.task.ClosureCompileTask
+import io.silksmith.plugin.SilkSmithBasePlugin
+import io.silksmith.plugin.SilkSmithExtension
 import io.silksmith.source.WebSourceSet
 
 import javax.inject.Inject
@@ -37,6 +38,7 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 				source  sourceSet.dependencyJSPath
 				sourceSet.js.srcDirs.each { source it }
 
+				dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
 				dest = "$project.buildDir/compiled/$sourceSetConfigurationName/${project.name}.js"
 			}
 		}

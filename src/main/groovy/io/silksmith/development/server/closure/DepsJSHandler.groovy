@@ -1,10 +1,10 @@
 package io.silksmith.development.server.closure
 
 import io.silksmith.SilkModuleCacheUtil
-import io.silksmith.SilkSmithExtension
 import io.silksmith.development.server.files.FilePathBuilder
 import io.silksmith.js.closure.DepsParser
 import io.silksmith.js.closure.FileInfo
+import io.silksmith.plugin.SilkSmithExtension;
 import io.silksmith.source.WebSourceSet
 
 import javax.servlet.ServletException

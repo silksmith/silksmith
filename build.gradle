@@ -1,5 +1,6 @@
 plugins {
 	id "com.jfrog.bintray" version "0.6"
+	id "com.jfrog.artifactory" version "3.0.1"
 }
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
@@ -63,6 +64,19 @@ publishing {
 			}
 		}
 	}
+}
+artifactory {
+	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
+	publish {
+		repository {
+			repoKey = 'oss-snapshot-local'
+			username = "${artifactory_user}"
+			password = "${artifactory_password}"
+			maven = true
+			 
+		}
+	}
+	
 }
 
 bintray {
