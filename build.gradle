@@ -75,7 +75,12 @@ artifactory {
 			maven = true
 			 
 		}
+		defaults {
+			//This closure defines defaults for all 'artifactoryPublish' tasks of all projects the plugin is applied to
+			publications ('mavenSnapshot')
+		}
 	}
+	
 	
 }
 
