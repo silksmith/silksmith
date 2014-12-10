@@ -47,7 +47,7 @@ task wrapper(type: Wrapper) {
 }
 publishing {
 	publications {
-		mavenSnapshot(MavenPublication) {
+		maven(MavenPublication) {
 			from components.java
 		}
 	}
@@ -77,7 +77,7 @@ artifactory {
 		}
 		defaults {
 			//This closure defines defaults for all 'artifactoryPublish' tasks of all projects the plugin is applied to
-			publications ('mavenSnapshot')
+			publications ('maven')
 		}
 	}
 	
@@ -90,7 +90,7 @@ bintray {
 	key = bintray_net_key
 	
 	
-	publications = ["jcenterSnapshot"]
+	publications = ["maven"]
 	pkg {
 		repo = 'maven'
 		userOrg = "silksmith-io"
