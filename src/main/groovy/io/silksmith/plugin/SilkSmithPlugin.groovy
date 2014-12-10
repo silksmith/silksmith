@@ -6,14 +6,11 @@ import io.silksmith.bundling.task.SilkArchive
 import io.silksmith.css.sass.plugin.SassPlugin
 import io.silksmith.development.task.WorkspaceServerTask
 import io.silksmith.js.closure.ClosureCompilerPlugin
-import io.silksmith.js.closure.task.TestJSTask
 import io.silksmith.publishing.SilkSmithLibrary
 import io.silksmith.source.WebSourceSet
 import io.silksmith.source.WebSourceSetContainer
 
 import javax.inject.Inject
-
-import org.gradle.internal.reflect.Instantiator
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -23,6 +20,7 @@ import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.SourceSet
+import org.gradle.internal.reflect.Instantiator
 
 
 
@@ -47,15 +45,19 @@ class SilkSmithPlugin implements Plugin<Project> {
 
 	void apply(final Project project) {
 		project.apply plugin:SilkSmithBasePlugin
-		project.apply plugin:ClosureCompilerPlugin
-		project.apply plugin:SassPlugin
+
 
 
 		sourceLookupService = project.plugins.getPlugin(SilkSmithBasePlugin).sourceLookupService
+
+
 		configureSourceSets(project)
 
 		configureArchivesAndComponent(project)
 		applyTasks(project)
+
+		project.apply plugin:ClosureCompilerPlugin
+		project.apply plugin:SassPlugin
 	}
 
 	void configureSourceSets(Project project) {
@@ -79,18 +81,12 @@ class SilkSmithPlugin implements Plugin<Project> {
 		project.task('server', type: WorkspaceServerTask, group: 'Development', description: 'Servers all required dependencies') {
 			sourceSet = mainSourceSet
 			configuration = config
+
+
 			dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(main, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
-			sourceLookupService = sourceLookupService
+			sourceLookupService = this.sourceLookupService
 		}
 
-		project.task("testJS", type: TestJSTask){
-			dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(test, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
-			sourceLookupService = sourceLookupService
-		}
-		project.task("watchTestJS", type: TestJSTask){
-			watch = true
-			dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(test, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
-		}
 
 		//set default task
 		project.defaultTasks SilkSmithBasePlugin.getSourceSetNamedTask(main, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)

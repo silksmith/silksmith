@@ -6,7 +6,6 @@ package io.silksmith.js.closure.task
 
 import io.silksmith.SourceLookupService
 import io.silksmith.development.server.WorkspaceServer
-import io.silksmith.plugin.SilkSmithExtension
 import io.silksmith.source.WebSourceSet
 
 import java.nio.file.FileSystems
@@ -17,6 +16,11 @@ import java.nio.file.WatchEvent
 import java.nio.file.WatchKey
 import java.nio.file.WatchService
 
+import org.eclipse.jetty.server.Handler
+import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.tasks.TaskAction
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.firefox.FirefoxDriver
@@ -24,11 +28,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition
 import org.openqa.selenium.support.ui.WebDriverWait
 
 import com.sun.nio.file.SensitivityWatchEventModifier
-
-import org.gradle.api.DefaultTask
-import org.gradle.api.GradleException
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.tasks.TaskAction
 
 
 class TestJSTask extends DefaultTask {
@@ -59,85 +58,108 @@ class TestJSTask extends DefaultTask {
 """
 
 	SourceLookupService sourceLookupService
-	boolean watch = false
+
+
+	WebSourceSet testSourceSet
+
+
+
+	@Lazy
+	WorkspaceServer server  = {
+
+		Configuration configuration = project.configurations[testSourceSet.configurationName]
+		[
+			project:project,
+			sourceSet: testSourceSet,
+			configuration:configuration,
+
+			sourceLookupService:sourceLookupService
+		]
+	}()
+
+
+	def handler(Handler handler) {
+		def s = server
+		server.handler(handler)
+	}
 	@TaskAction
 	def test() {
 
-		WebSourceSet sourceSet = project.extensions.getByType(SilkSmithExtension).source["test"]
 
-		Configuration configuration = project.configurations["testWeb"]
-
-		configuration.each { println "TEST $it" }
-
-		def server = new WorkspaceServer([project:project, sourceSet: sourceSet, configuration:configuration, resourceBase : project.projectDir,sourceLookupService:sourceLookupService])
-
+		boolean watch = project.hasProperty('watch')
 		server.start()
-
-
 		WebDriver driver = new FirefoxDriver()
 
-
-		driver.get("$server.server.URI/TEST/MOCHA")
+		driver.get("${server.server.URI}TEST/MOCHA")
 
 		if(watch) {
 
-			def keysAndPath = [:]
+			try {
 
 
+				def keysAndPath = [:]
 
-			WatchService watchService = FileSystems.getDefault().newWatchService()
-			sourceSet.js.srcDirs.collect({ File srcDirFile ->
+				WatchService watchService = FileSystems.getDefault().newWatchService()
+				testSourceSet.js.srcDirs.collect({ File srcDirFile ->
 
-				if(srcDirFile.isDirectory()) {
-					def dirs = [srcDirFile]
-					srcDirFile.eachDirRecurse dirs.&add
-					return dirs
+					if(srcDirFile.isDirectory()) {
+						def dirs = [srcDirFile]
+						srcDirFile.eachDirRecurse dirs.&add
+						return dirs
+					}
+				}).grep().flatten().collect({
+					Paths.get(it.toURI())
+				}).each({ Path srcDirPath ->
+
+					srcDirPath.register(
+							watchService,
+							[
+								StandardWatchEventKinds.ENTRY_MODIFY,
+								StandardWatchEventKinds.ENTRY_DELETE,
+								StandardWatchEventKinds.ENTRY_CREATE
+							] as WatchEvent.Kind[], SensitivityWatchEventModifier.HIGH
+							)
+				})
+
+				while (true) {
+
+					WatchKey key = watchService.take()
+
+					logger.info("Files changed")
+					//Poll all the events queued for the key
+					for ( WatchEvent<?> event: key.pollEvents()){
+
+
+						WatchEvent.Kind kind = event.kind()
+
+						logger.debug("Refresshing ($kind)")
+						driver.navigate().refresh()
+
+					}
+					//reset is invoked to put the key back to ready state
+					boolean valid = key.reset()
+					//If the key is invalid, just exit.
+					if ( !valid ) {
+						logger.warn("$key is invalid, ending watch")
+						break
+					}
 				}
-			}).grep().flatten().collect({
-				Paths.get(it.toURI())
-			}).each({ Path srcDirPath ->
-
-				srcDirPath.register(
-						watchService,
-						[
-							StandardWatchEventKinds.ENTRY_MODIFY,
-							StandardWatchEventKinds.ENTRY_DELETE,
-							StandardWatchEventKinds.ENTRY_CREATE
-						] as WatchEvent.Kind[], SensitivityWatchEventModifier.HIGH
-						)
-			})
-
-			while (true) {
-
-				WatchKey key = watchService.take()
-
-				logger.info("Files changed")
-				//Poll all the events queued for the key
-				for ( WatchEvent<?> event: key.pollEvents()){
-
-
-					WatchEvent.Kind kind = event.kind()
-
-					logger.debug("Refresshing ($kind)")
-					driver.navigate().refresh()
-
-				}
-				//reset is invoked to put the key back to ready state
-				boolean valid = key.reset()
-				//If the key is invalid, just exit.
-				if ( !valid ) {
-					logger.warn("$key is invalid, ending watch")
-					break
-				}
+			}catch(Exception e) {
+				logger.error("An error occured while watching", e)
+			}finally {
+				driver.quit()
+				server.stop()
 			}
-			driver.quit()
+
 		}else {
 			def ok = executeTestInBrowser(driver)
 			driver.quit()
+			server.stop()
 			if(!ok) {
 				throw new GradleException("Some tasks did not pass")
 			}
 		}
+
 
 
 

@@ -2,6 +2,14 @@
 package io.silksmith.js.closure.task
 
 
+import io.silksmith.development.server.closure.ClosureJSOutput;
+
+import org.gradle.api.GradleException
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputFile
+import org.gradle.api.tasks.SourceTask
+import org.gradle.api.tasks.TaskAction
 import org.gradle.util.ConfigureUtil
 
 import com.google.javascript.jscomp.CompilationLevel
@@ -10,14 +18,7 @@ import com.google.javascript.jscomp.CompilerOptions
 import com.google.javascript.jscomp.Result
 import com.google.javascript.jscomp.SourceFile
 
-import org.gradle.api.GradleException
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Optional
-import org.gradle.api.tasks.OutputFile
-import org.gradle.api.tasks.SourceTask
-import org.gradle.api.tasks.TaskAction
-
-class ClosureCompileTask extends SourceTask {
+class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 
 
 	@Input

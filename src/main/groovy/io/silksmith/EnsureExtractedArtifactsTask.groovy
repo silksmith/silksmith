@@ -13,10 +13,11 @@ class EnsureExtractedArtifactsTask extends DefaultTask {
 	@TaskAction
 	def ensure() {
 
+		//TODO: inject
 		def service = new DefaultExtraArtifactService([project:project])
 
 		configuration.resolvedConfiguration.resolvedArtifacts.each { ResolvedArtifact resolvedArtifact ->
-			service.ensurePackage(project, resolvedArtifact)
+			service.ensurePackage( resolvedArtifact)
 		}
 	}
 }

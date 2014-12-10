@@ -4,7 +4,7 @@ import io.silksmith.SilkModuleCacheUtil
 import io.silksmith.development.server.files.FilePathBuilder
 import io.silksmith.js.closure.DepsParser
 import io.silksmith.js.closure.FileInfo
-import io.silksmith.plugin.SilkSmithExtension;
+import io.silksmith.plugin.SilkSmithExtension
 import io.silksmith.source.WebSourceSet
 
 import javax.servlet.ServletException
@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletResponse
 
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.handler.AbstractHandler
-import org.slf4j.LoggerFactory
-
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
@@ -22,6 +20,7 @@ import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedComponentResult
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.SourceSet
+import org.slf4j.LoggerFactory
 
 class DepsJSHandler extends AbstractHandler {
 
@@ -39,6 +38,7 @@ class DepsJSHandler extends AbstractHandler {
 	def sourceSetName = SourceSet.MAIN_SOURCE_SET_NAME
 
 	FilePathBuilder filePathBuilder = new FilePathBuilder([project:project])
+
 	@Override
 	public void handle(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
@@ -46,8 +46,9 @@ class DepsJSHandler extends AbstractHandler {
 
 		if(DEPS_JS == target) {
 
+
 			def moduleComponents = configuration.incoming.resolutionResult.allComponents.grep({ResolvedComponentResult it ->it.id instanceof ModuleComponentIdentifier })
-			response.setContentType('application/javascript')
+			response.contentType = 'application/javascript'
 			moduleComponents.each( {
 				ModuleComponentIdentifier mcid = it.id
 
@@ -79,7 +80,7 @@ class DepsJSHandler extends AbstractHandler {
 
 				dirSet.srcDirs.unique().sort().eachWithIndex { srcDir,index ->
 
-					println "$index, $srcDir"
+
 					def fileInfos = depsParser.parse(project.fileTree(srcDir).filter({dirSet.contains(it)}).files)
 					fileInfos.each { FileInfo fileInfo ->
 
