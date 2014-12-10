@@ -18,21 +18,26 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
-import org.gradle.api.tasks.SourceSet
 import org.slf4j.LoggerFactory
-class DevelopmentHandler extends AbstractHandler {
-
-
+/**
+ * Mimics the /my.app.js request
+ * @author bruchmann
+ *
+ */
+class ClosureJSDevelopmentHandler extends AbstractHandler{
 
 	final def DOCUMENT_WRITE_GOOG_REQUIRE_ENTRY_POINT = { entryPoint -> """
 document.write('<script>goog.require("$entryPoint")</script>');
 """ }
 	final def CLOSURE_SETTINGS = { """CLOSURE_BASE_PATH="/";
 """ }
-	//final def CSS = """<link href="$location" rel="stylesheet">"""
 
 
-	def logger = LoggerFactory.getLogger(DevelopmentHandler)
+	def basePathJS =""
+	ClosureJSOutput jsOutput
+
+
+	def logger = LoggerFactory.getLogger(ClosureJSDevelopmentHandler)
 
 
 	Configuration configuration
@@ -41,34 +46,24 @@ document.write('<script>goog.require("$entryPoint")</script>');
 
 	SourceLookupService sourceLookupService
 
+	//TODO: inject
 	FilePathBuilder builder = new FilePathBuilder([project:project])
 
-	String otherProjectSourceSetName = SourceSet.MAIN_SOURCE_SET_NAME
+
 	@Override
 	public void handle(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 	throws IOException, ServletException {
-
-		logger.debug "Development Handler checking $target"
-
-		if("/DEVELOPMENT" == target) {
-
-			def staticExcludes = baseRequest.parameterMap["statics.exclude"]
-			def staticsExcludeJS = "JS" in staticExcludes
-			def staticsExcludeCSS = "CSS" in staticExcludes
-
+		if(target == "$basePathJS/$jsOutput.dest.name") {
 
 			def writeDocumentWritePath = {String path ->
-				if(path.endsWith(".js") && !staticsExcludeJS) {
+				if(path.endsWith(".js") ) {
 
 					response.writer << DocumentWriteUtil.js(path)
-				}else if(path.endsWith(".css") && !staticsExcludeCSS){
-
-					response.writer << DocumentWriteUtil.css(path)
 				}
 			}
 
-			response.setContentType('application/javascript')
+			response.contentType = 'application/javascript'
 			response.writer << CLOSURE_SETTINGS.call()
 
 			def components = ComponentUtil.getOrdered(configuration)
@@ -78,9 +73,11 @@ document.write('<script>goog.require("$entryPoint")</script>');
 				WebSourceElements webSources = sourceLookupService.get(cId)
 				handleComponent(cId, webSources, writeDocumentWritePath)
 			})
-			if(baseRequest.parameterMap["entryPoint"]) {
-				response.writer << DOCUMENT_WRITE_GOOG_REQUIRE_ENTRY_POINT.call(baseRequest.parameterMap["entryPoint"].first())
+
+			if(jsOutput.entryPoint) {
+				response.writer << DOCUMENT_WRITE_GOOG_REQUIRE_ENTRY_POINT.call(jsOutput.entryPoint)
 			}
+
 			baseRequest.handled = true
 		}
 	}
@@ -101,7 +98,6 @@ document.write('<script>goog.require("$entryPoint")</script>');
 					writeDocumentWritePath(path)
 				}
 			}
-
 		}
 	}
 }

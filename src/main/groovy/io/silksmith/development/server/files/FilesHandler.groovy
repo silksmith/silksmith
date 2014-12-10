@@ -1,5 +1,6 @@
 package io.silksmith.development.server.files
 
+import io.silksmith.SilkModuleCacheUtil
 import io.silksmith.plugin.SilkSmithExtension
 import io.silksmith.source.WebSourceSet
 
@@ -7,10 +8,8 @@ import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-import org.apache.ivy.core.cache.CacheUtil
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.handler.AbstractHandler
-
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
 
@@ -65,7 +64,7 @@ class FilesHandler extends AbstractHandler{
 			def sourceType = matcherModule.group(4)
 			def path = matcherModule.group(5)
 
-			def pathInCache = CacheUtil.pathInCache(group, name, version)
+			def pathInCache = SilkModuleCacheUtil.pathInCache(group, name, version)
 
 			//XXX
 			//TODO: to much knowledge about cache structure

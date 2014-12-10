@@ -12,10 +12,14 @@ class GemInstallTask extends DefaultTask {
 	Configuration jrubyConfig
 
 	@OutputDirectory
-	def gemInstallDir = project.file("$project.buildDir/gem")
+	def gemInstallDir
 
 	@Input
-	def gems = ["sass"]
+	def gems = [:]
+
+	def gem(String name, version=null) {
+		gems[name] = version
+	}
 
 	@TaskAction
 	def install() {
@@ -23,23 +27,32 @@ class GemInstallTask extends DefaultTask {
 
 		gemInstallDir.mkdirs()
 
-		gems.each { gemName ->
-			logger.info "Installing $gemName"
+		gems.each { gem ->
+			logger.info "Installing $gem"
 			project.javaexec({
 				main = "org.jruby.Main"
 				classpath = jrubyConfig
-				args = [
+				def jRubyArgs = [
 					"-S",
 					"gem",
 					"install",
 					"-i",
-					"$gemInstallDir",
-					"$gemName",
-					"--no-rdoc",
-					"--no-ri"
+					"$gemInstallDir"
 				]
+
+				jRubyArgs << "$gem.key"
+				if(gem.value) {
+					jRubyArgs << "$gem.value"
+				}
+				jRubyArgs <<"--no-rdoc"
+				jRubyArgs << "--no-ri"
+
+				args = jRubyArgs
+
 				environment 'PATH', "$gemInstallDir/bin"
 				environment 'GEM_PATH', gemInstallDir
+
+				println "Executing ${commandLine.join(' ')}"
 			})
 		}
 
