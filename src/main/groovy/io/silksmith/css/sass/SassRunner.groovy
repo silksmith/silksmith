@@ -31,6 +31,7 @@ class SassRunner implements CSSOutput {
 	def run(SassMode mode = SassMode.update) {
 		//-I
 		def importPathsArgs = []
+		outputDir.parentFile.mkdirs()
 		importPathsArgs = configuration.incoming.resolutionResult.allComponents.collect({ ResolvedComponentResult rcr ->
 
 			sourceLookupService.get(rcr.id)

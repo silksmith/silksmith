@@ -3,10 +3,6 @@ package io.silksmith.source.internal
 import io.silksmith.source.WebSourceSet
 
 import org.apache.commons.lang3.StringUtils
-import org.gradle.internal.reflect.Instantiator
-import org.gradle.util.ConfigureUtil
-import org.gradle.util.GUtil
-
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
@@ -14,6 +10,9 @@ import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.file.DefaultSourceDirectorySet
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.tasks.SourceSet
+import org.gradle.internal.reflect.Instantiator
+import org.gradle.util.ConfigureUtil
+import org.gradle.util.GUtil
 
 
 
@@ -29,6 +28,7 @@ class DefaultWebSourceSet implements WebSourceSet {
 
 
 	private FileCollection dependencyJSPath
+	private FileCollection dependencyExternsPath
 
 	private FileCollection runtimeJSPath
 	DefaultWebSourceSet(String name, Project project, Instantiator instantiator, FileResolver fileResolver) {
@@ -129,5 +129,15 @@ class DefaultWebSourceSet implements WebSourceSet {
 	@Override
 	public Set<File> getExternsDirs() {
 		return this.externs.srcDirs
+	}
+
+	@Override
+	public FileCollection getDependencyExternsPath() {
+		return dependencyExternsPath
+	}
+
+	@Override
+	public void setDependencyExternsPath(FileCollection externsPath) {
+		this.dependencyExternsPath = dependencyExternsPath
 	}
 }
