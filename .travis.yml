@@ -5,3 +5,7 @@ env:
   global:
   - secure: EsdiolxbnGKAKwlwEp9UQppbpgEe+H4yCqlaLvxMBhMJtiYNXlWZ256nI3yPOUQBRTUYm5Wm2SqH+0QBUJKtderFuv4CLeada8kdMgcyptyqk5rI8j2HjEnt8fWd+FDBIvQvX0dumi+BIMoXoibgEcHi9rs6XD4m9t9hDxWkR8s=
   - secure: LTUWwsmnivxbGwlrsaVf0aSRoh7BzOfUfMBlJ1MGvsRCrk7B34pc36ZD1ACn/GWynqPZFz+FWjOhjDlP9ymfxzYxkBc5Cwpcw1KiknwCH3KQqZ8QC8m0tIF/rPdcRS25tf+9w8cnwdVbDDCxkvadFw8BF8VCbe+oZhps6O+2X/E=
+branches:
+  only:
+    - master
+after_success: ./gradlew bintrayUpload

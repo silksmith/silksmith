@@ -11,12 +11,11 @@ import io.silksmith.source.WebSourceSet
 import javax.inject.Inject
 
 import org.apache.commons.lang3.StringUtils
-import org.gradle.internal.reflect.Instantiator
-
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.plugins.BasePlugin
+import org.gradle.internal.reflect.Instantiator
 
 class SilkSmithBasePlugin implements Plugin<Project> {
 
@@ -68,6 +67,7 @@ class SilkSmithBasePlugin implements Plugin<Project> {
 			sourceSet.statics.srcDir "$SRC_FOLDER_NAME/$sourceSet.name/$STATICS_FOLDER_NAME"
 			sourceSet.scss.srcDir "$SRC_FOLDER_NAME/$sourceSet.name/$SCSS_FOLDER_NAME"
 
+			sourceSet.dependencyExternsPath = new WebDependencyFileCollection(config, sourceLookupService, SourceType.externs)
 			sourceSet.dependencyJSPath = new WebDependencyFileCollection(config, sourceLookupService, SourceType.js)
 
 			sourceSet.runtimeJSPath = sourceSet.dependencyJSPath + sourceSet.js

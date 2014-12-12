@@ -48,6 +48,7 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 			source  mainSourceSet.dependencyJSPath //TODO: use runtime path?
 			mainSourceSet.js.srcDirs.each { source it }
 
+			externs mainSourceSet.dependencyExternsPath
 			dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(mainSourceSet, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
 			dest = "$project.buildDir/compiled/$mainSourceSet.configurationName/${project.name}.js"
 		}

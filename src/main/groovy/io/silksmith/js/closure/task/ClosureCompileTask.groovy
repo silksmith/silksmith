@@ -2,9 +2,11 @@
 package io.silksmith.js.closure.task
 
 
-import io.silksmith.development.server.closure.ClosureJSOutput;
+import io.silksmith.development.server.closure.ClosureJSOutput
 
 import org.gradle.api.GradleException
+import org.gradle.api.file.FileCollection
+import org.gradle.api.internal.file.collections.SimpleFileCollection
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
@@ -33,8 +35,13 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 	@OutputFile
 	def sourceMap
 
+	FileCollection externs = new SimpleFileCollection()
+
 	CompilerOptions options = new CompilerOptions()
 
+	def externs(FileCollection fileCollection) {
+		externs +=fileCollection
+	}
 	File getDest() {
 		project.file(dest)
 	}
@@ -59,9 +66,10 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 
 		}
 		def jsSources = source.collect({SourceFile.fromFile(it)})
+		def jsExterns = externs.collect({SourceFile.fromFile(it)})
 
 
-		Result result = compiler.compile([], jsSources, options)
+		Result result = compiler.compile(jsExterns, jsSources, options)
 
 		result.warnings.each {logger.&warn }
 		result.errors.each {logger.&error }

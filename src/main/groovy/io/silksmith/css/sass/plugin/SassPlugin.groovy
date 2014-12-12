@@ -32,11 +32,10 @@ class SassPlugin implements Plugin<Project>{
 			def config = project.configurations.findByName(sourceSetConfigurationName)
 
 
-			if(sourceSet.scss.srcDirs.any({ File f ->
-				f.exists()
-			})) {
+			if(sourceSet.scss.srcDirs.any({ File f ->f.exists()})) {
 
-				GemInstallTask installGemTask = project.task(SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet,"SassGems"), type:GemInstallTask){
+				def installSassGemTaskName = SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet,"SassGems")
+				GemInstallTask installGemTask = project.task(installSassGemTaskName, type:GemInstallTask){
 					gem "sass"
 					jrubyConfig = project.configurations.jruby
 					gemInstallDir = project.file("$project.projectDir/.gems/$name")
@@ -54,6 +53,9 @@ class SassPlugin implements Plugin<Project>{
 					dependsOn installGemTask
 				}
 				project.tasks.withType(WorkspaceServerTask){
+
+
+					dependsOn installGemTask
 
 					SassCSSHandler cssHandler = new SassCSSHandler([
 
