@@ -5,7 +5,10 @@ env:
   global:
   - secure: EsdiolxbnGKAKwlwEp9UQppbpgEe+H4yCqlaLvxMBhMJtiYNXlWZ256nI3yPOUQBRTUYm5Wm2SqH+0QBUJKtderFuv4CLeada8kdMgcyptyqk5rI8j2HjEnt8fWd+FDBIvQvX0dumi+BIMoXoibgEcHi9rs6XD4m9t9hDxWkR8s=
   - secure: LTUWwsmnivxbGwlrsaVf0aSRoh7BzOfUfMBlJ1MGvsRCrk7B34pc36ZD1ACn/GWynqPZFz+FWjOhjDlP9ymfxzYxkBc5Cwpcw1KiknwCH3KQqZ8QC8m0tIF/rPdcRS25tf+9w8cnwdVbDDCxkvadFw8BF8VCbe+oZhps6O+2X/E=
+  - secure: QL1HVvZqZ0C/2uUp+ZUPj9Xk/P5bgLwWiPPXFfz9lFCoTv7wiOjhgsJCSOoDU2KlBCS1J4bAwhEzi5xJ/hkCQ5ZN2NTXC8RXvmk645NukpbRMhIqw2ZVgETmUvX/xqY7m8UoZwPXEmyTf3Qjmmnr3pGmtTnYilKhxYF+zCJ9SSQ=
+  - secure: QZqqh9xKLDfO5b6Is8xqgBQ5nbY3W3tl0abVLd0/BgrPSHFw6MVqeJ+Ymg+v2xeF8AIazEjYFpQTwg8tF/YVeI0elM4M2bCC9tl1JyRKeFdSzIHkVRk580HbCiR64BMFAz1gCrc1xZmLxTOTpRhcXxm1onU9T8wU2wSF2PIQoTc=
 branches:
   only:
-    - master
-after_success: ./gradlew bintrayUpload
+  - master
+after_success:
+- ./gradlew bintrayUpload
