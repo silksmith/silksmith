@@ -11,4 +11,4 @@ env:
 #  only:
 #  - master
 after_success:
-- ./gradlew bintrayUpload
+- ./gradlew bintrayUpload -Pbintray_net_user="${bintray_net_user}" -Pbintray_net_key="${bintray_net_key}"
