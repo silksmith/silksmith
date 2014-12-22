@@ -36,11 +36,11 @@ class WebDependencyFileCollection extends FileCollectionAdapter{
 
 			def components = configuration.incoming.resolutionResult.allComponents - configuration.incoming.resolutionResult.root
 
-			FileCollection[] colllections = components.collect { ResolvedComponentResult r ->
+			FileCollection[] colllections = components.collect( { ResolvedComponentResult r ->
 
 				WebSourceElements source = sourceLookupService.get(r.id)
 				source[type.name()]
-			}
+			}).grep()
 			UnionFileCollection union = new UnionFileCollection(colllections)
 
 			return union.files

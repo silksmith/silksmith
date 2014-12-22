@@ -1,5 +1,6 @@
 package io.silksmith.js.closure
 
+import io.silksmith.development.ide.idea.libraries.IdeaJSLibrariesTask
 import io.silksmith.development.server.closure.ClosureJSDevelopmentHandler
 import io.silksmith.development.server.closure.DepsJSHandler
 import io.silksmith.development.server.js.test.MochaHandler
@@ -42,6 +43,8 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 		Configuration mainConfig = project.configurations.getByName(mainSourceSet.configurationName)
 		Configuration testConfig = project.configurations.getByName(testWebSourceSet.configurationName)
 
+
+		project.task("ideaExterns", type:IdeaJSLibrariesTask){ configuration = mainConfig }
 
 		def mainCompileTaskName = SilkSmithBasePlugin.getSourceSetNamedTask(mainSourceSet, ClOSURE_COMPILE_JS_BASE_NAME)
 		project.task(mainCompileTaskName,type: ClosureCompileTask){

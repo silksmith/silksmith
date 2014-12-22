@@ -137,7 +137,7 @@ class DefaultWebSourceSet implements WebSourceSet {
 	}
 
 	@Override
-	public void setDependencyExternsPath(FileCollection externsPath) {
-		this.dependencyExternsPath = dependencyExternsPath
+	public void setDependencyExternsPath(FileCollection files) {
+		this.dependencyExternsPath = files
 	}
 }
