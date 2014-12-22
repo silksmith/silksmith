@@ -62,7 +62,7 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 			options.dependencyOptions.dependencyPruning = true
 			options.dependencyOptions.dependencySorting = true
 			options.dependencyOptions.moocherDropping = true
-			options.newTypeInference = true
+			//options.newTypeInference = true
 
 
 		}
