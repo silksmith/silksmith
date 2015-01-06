@@ -27,7 +27,7 @@ class SilkModuleCacheUtil {
 	}
 
 	static def externsPathInCache(ModuleComponentIdentifier id) {
-		"${pathInCache(id)}/$SilkArchive.JS_DIR"
+		"${pathInCache(id)}/$SilkArchive.EXTERNS_DIR"
 	}
 	static def jsPathInCache(ModuleComponentIdentifier id) {
 		"${pathInCache(id)}/$SilkArchive.JS_DIR"

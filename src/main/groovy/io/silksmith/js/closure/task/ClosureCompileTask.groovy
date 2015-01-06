@@ -67,17 +67,28 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 
 		}
 		def jsSources = source.collect({ SourceFile.fromFile(it) })
-		println "externs $externs"
-		def jsExterns = externs.collect({
-			println "Collecting $it"
-			SourceFile.fromFile(it)
-		})
+
+		def jsExterns = externs.collect({ SourceFile.fromFile(it)})
 
 
 		Result result = compiler.compile(jsExterns, jsSources, options)
 
-		result.warnings.each logger.&warn
-		result.errors.each logger.&error
+		//		if(result.errors) {
+		//
+		//			logger.error("There where {} errors in your code!", result.errors.size())
+		//			result.errors.each {JSError error ->
+		//				logger.error error.toString()
+		//			}
+		//
+		//		}
+		//		if(result.warnings) {
+		//
+		//			logger.warn("There where {} warnings in your code!", result.warnings.size())
+		//			result.warnings.each { JSError warning ->
+		//				logger.warn warning.toString()
+		//			}
+		//		}
+
 		// The compiler is responsible for generating the compiled code; it is not
 		// accessible via the Result.
 
