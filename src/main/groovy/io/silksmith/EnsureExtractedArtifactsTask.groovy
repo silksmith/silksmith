@@ -7,7 +7,7 @@ import org.gradle.api.tasks.TaskAction
 
 class EnsureExtractedArtifactsTask extends DefaultTask {
 
-
+	//TODO: dependsOn
 	Configuration configuration
 
 	@TaskAction

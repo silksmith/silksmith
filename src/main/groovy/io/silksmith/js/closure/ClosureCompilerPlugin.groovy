@@ -1,5 +1,6 @@
 package io.silksmith.js.closure
 
+import io.silksmith.ComponentUtil
 import io.silksmith.development.ide.idea.libraries.IdeaJSLibrariesTask
 import io.silksmith.development.server.closure.ClosureJSDevelopmentHandler
 import io.silksmith.development.server.closure.DepsJSHandler
@@ -9,6 +10,7 @@ import io.silksmith.js.closure.task.ClosureCompileTask
 import io.silksmith.js.closure.task.TestJSTask
 import io.silksmith.plugin.SilkSmithBasePlugin
 import io.silksmith.plugin.SilkSmithExtension
+import io.silksmith.source.WebSourceElements
 import io.silksmith.source.WebSourceSet
 
 import javax.inject.Inject
@@ -16,6 +18,8 @@ import javax.inject.Inject
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.component.ComponentIdentifier
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.tasks.SourceSet
 import org.gradle.internal.reflect.Instantiator
@@ -26,6 +30,7 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 	private FileResolver fileResolver
 
 	public static final ClOSURE_COMPILE_JS_BASE_NAME = "ClosureCompileJS"
+	public static final ASSEMBLE_JS_BASE_NAME = "AssembleJS"
 
 	@Inject
 	public ClosureCompilerPlugin(Instantiator instantiator, FileResolver fileResolver) {
@@ -47,7 +52,7 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 		project.task("ideaExterns", type:IdeaJSLibrariesTask){ configuration = mainConfig }
 
 		def mainCompileTaskName = SilkSmithBasePlugin.getSourceSetNamedTask(mainSourceSet, ClOSURE_COMPILE_JS_BASE_NAME)
-		project.task(mainCompileTaskName,type: ClosureCompileTask){
+		ClosureCompileTask mainCompileTask = project.task(mainCompileTaskName,type: ClosureCompileTask){
 			source  mainSourceSet.dependencyJSPath //TODO: use runtime path?
 			mainSourceSet.js.srcDirs.each { source it }
 
@@ -73,5 +78,43 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 			def closureCompileTask = project.tasks.getByName(mainCompileTaskName)
 			handler(new ClosureJSDevelopmentHandler([project:project, configuration:mainConfig, sourceLookupService:webSourceLookupService, jsOutput:closureCompileTask]))
 		}
+
+		def mainAssembleJSTaskName = SilkSmithBasePlugin.getSourceSetNamedTask(mainSourceSet, ASSEMBLE_JS_BASE_NAME)
+		def assembleOutputDir = project.file("$project.buildDir/assembledJS/$mainSourceSet.name")
+		assembleOutputDir.mkdirs()
+		def assembleJSTask = project.task(mainAssembleJSTaskName)<< {
+
+			def outputFile = project.file("$assembleOutputDir/$mainCompileTask.dest.name")
+			outputFile.withWriter { Writer writer ->
+
+				ComponentUtil.getOrdered(mainConfig).grep({ComponentIdentifier ci ->
+					if(ci instanceof ModuleComponentIdentifier) {
+						//TODO: remove hardcoded, maybe add devConfig that is removed on assemble
+						return ci.module != "closure-base"
+					}
+					true
+				}).collect( {
+					webSourceLookupService.get(it)
+
+				}).each( { WebSourceElements wse ->
+					wse.statics.files.each { File f ->
+						if(f.path.endsWith(".js")) {
+							f.withReader { Reader reader ->
+								writer << reader << '\n'
+							}
+						}
+					}
+
+				})
+				mainCompileTask.dest.withReader{ Reader reader ->
+					writer << '\n//APP\n' << reader << '\n'
+				}
+			}
+		}
+		assembleJSTask.inputs.files mainSourceSet.dependencyStaticsPath
+		assembleJSTask.dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(mainSourceSet, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
+		assembleJSTask.inputs.files mainCompileTask
+
+		assembleJSTask.outputs.dir assembleOutputDir
 	}
 }

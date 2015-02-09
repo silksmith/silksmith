@@ -1,5 +1,5 @@
 plugins {
-	id "com.jfrog.bintray" version "0.6"
+	id "com.jfrog.bintray" version "1.1"
 	id "com.jfrog.artifactory" version "3.0.1"
 }
 apply plugin: 'groovy'
@@ -33,17 +33,14 @@ dependencies {
 	compile "com.google.javascript:closure-compiler:$closureCompilerVersion"
 	
 	compile 'org.jruby:jruby-complete:1.7.17'
-
-	testCompile 'junit:junit:4.11'
-	
 	compile 'org.webjars:mocha:2.0.1'
-
 	compile 'org.seleniumhq.selenium:selenium-java:2.44.0'
 	
+	testCompile 'junit:junit:4.11'
 
 }
 task wrapper(type: Wrapper) {
-	gradleVersion ="2.2.1"
+	gradleVersion ="2.3-rc-3"
 	distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
 publishing {
@@ -81,8 +78,6 @@ artifactory {
 			publications ('maven')
 		}
 	}
-	
-	
 }
 
 bintray {

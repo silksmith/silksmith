@@ -1,12 +1,14 @@
 
 package io.silksmith.plugin
 
+import io.silksmith.ComponentUtil
 import io.silksmith.SourceLookupService
 import io.silksmith.bundling.task.SilkArchive
 import io.silksmith.css.sass.plugin.SassPlugin
 import io.silksmith.development.task.WorkspaceServerTask
 import io.silksmith.js.closure.ClosureCompilerPlugin
 import io.silksmith.publishing.SilkSmithLibrary
+import io.silksmith.source.WebSourceElements
 import io.silksmith.source.WebSourceSet
 import io.silksmith.source.WebSourceSetContainer
 
@@ -19,6 +21,7 @@ import org.gradle.api.internal.artifacts.publish.ArchivePublishArtifact
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.plugins.DefaultArtifactPublicationSet
 import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.SourceSet
 import org.gradle.internal.reflect.Instantiator
 
@@ -30,7 +33,7 @@ class SilkSmithPlugin implements Plugin<Project> {
 	private final Instantiator instantiator
 	private final FileResolver fileResolver
 
-
+	public static final String ASSEMBLE_WEBAPP_TASK_NAME = "assembleWebapp"
 	WebSourceSet main
 	WebSourceSet test
 
@@ -90,6 +93,22 @@ class SilkSmithPlugin implements Plugin<Project> {
 
 		//set default task
 		project.defaultTasks SilkSmithBasePlugin.getSourceSetNamedTask(main, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
+
+		project.task(ASSEMBLE_WEBAPP_TASK_NAME, type: Copy){
+			dependsOn config
+			from {
+				ComponentUtil.getOrdered(config).collect( {
+					sourceLookupService.get(it)
+
+				}).collect( { WebSourceElements wse ->
+					wse.staticsDirs
+
+				}).flatten()
+			}
+
+			into("$project.buildDir/webapp")
+
+		}
 	}
 
 

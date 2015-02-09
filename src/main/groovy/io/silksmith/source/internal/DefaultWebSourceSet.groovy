@@ -29,6 +29,7 @@ class DefaultWebSourceSet implements WebSourceSet {
 
 	private FileCollection dependencyJSPath
 	private FileCollection dependencyExternsPath
+	private FileCollection dependencyStaticsPath
 
 	private FileCollection runtimeJSPath
 	DefaultWebSourceSet(String name, Project project, Instantiator instantiator, FileResolver fileResolver) {
@@ -139,5 +140,15 @@ class DefaultWebSourceSet implements WebSourceSet {
 	@Override
 	public void setDependencyExternsPath(FileCollection files) {
 		this.dependencyExternsPath = files
+	}
+
+	@Override
+	public FileCollection getDependencyStaticsPath() {
+		return this.dependencyStaticsPath
+	}
+
+	@Override
+	public void setDependencyStaticsPath(FileCollection staticsPath) {
+		this.dependencyStaticsPath = staticsPath
 	}
 }

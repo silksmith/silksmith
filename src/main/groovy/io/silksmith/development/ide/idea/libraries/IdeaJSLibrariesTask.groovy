@@ -20,7 +20,7 @@ class IdeaJSLibrariesTask extends DefaultTask{
 
 		configuration.incoming.resolutionResult.allComponents
 				.grep({ResolvedComponentResult r-> r.id instanceof ModuleComponentIdentifier})
-				.collect {ResolvedComponentResult r->
+				.each {ResolvedComponentResult r->
 					generate(r.id)
 				}
 	}
@@ -29,7 +29,7 @@ class IdeaJSLibrariesTask extends DefaultTask{
 		def name = "$cid.group-$cid.module-$cid.version"
 		def outputFile = new File("$project.projectDir/$output/${name}.xml")
 		def file = new File(SilkModuleCacheUtil.externsPathInCache(cid))
-
+		outputFile.parentFile.mkdirs()
 		outputFile.withWriter { writer ->
 
 
