@@ -28,6 +28,15 @@ if you want to run the tests in watch mode append ```-Pwatch```
 
 
 
+##Extension
+###Angular
+build.gradle
+```
+apply plugin : "silksmith-angular"
+
+```
+
+
 ##Other plugins:
 
 Some initial ideas from https://github.com/eriwen/gradle-js-plugin

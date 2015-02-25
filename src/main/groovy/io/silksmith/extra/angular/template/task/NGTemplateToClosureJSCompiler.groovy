@@ -43,8 +43,9 @@ var tmpl = ''"""
 
 						out.println "+ '$escapedLine'"
 					}
+					out << ";"
 					out.println """
-\$templateCache('$inputFilePath', tmpl);
+\$templateCache.put('$inputFilePath', tmpl);
 };"""
 				}
 			}
