@@ -13,9 +13,30 @@ apply plugin : "silksmith"
 To compile the application specify the "entryPoint" in for the closureCompileJS task
 
 ```
-
 closureCompileJS {
 	entyPoint = "my.app.main"
+}
+
+```
+In your ```index.html```
+```
+<html>
+<head>
+
+	<link href="/your-style-sheet.css">
+	
+</head>
+<body>
+	...
+	<script src="your-app.js"></script>
+</body>
+</html>
+```
+Serve the directory that contains the ```index.html```
+```
+server {
+	// for example if your index.html is in src/main/resources/static
+	dir file("src/main/resources/static") 
 }
 
 ```
@@ -35,6 +56,7 @@ build.gradle
 apply plugin : "silksmith-angular"
 
 ```
+Now you can put angular templates in ```src/main/ngTemplates``` and can annotate that need injection with ```@ngInject``
 
 
 ##Other plugins:

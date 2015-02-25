@@ -1,7 +1,9 @@
 package io.silksmith.development.task
 
+import io.silksmith.ComponentUtil
 import io.silksmith.SourceLookupService
 import io.silksmith.development.server.WorkspaceServer
+import io.silksmith.source.WebSourceElements
 import io.silksmith.source.WebSourceSet
 
 import org.eclipse.jetty.server.Handler
@@ -51,6 +53,9 @@ class WorkspaceServerTask extends DefaultTask{
 	@TaskAction
 	def start(){
 
+		ComponentUtil.getOrdered(configuration).collect(sourceLookupService.&get).each {WebSourceElements wse ->
+			wse.staticsDirs.each {  dir it }
+		}
 		server.start()
 		server.join()
 	}
