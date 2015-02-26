@@ -68,7 +68,11 @@ class SilkSmithBasePlugin implements Plugin<Project> {
 			sourceSet.scss.srcDir "$SRC_FOLDER_NAME/$sourceSet.name/$SCSS_FOLDER_NAME"
 
 			sourceSet.dependencyExternsPath = new WebDependencyFileCollection(config, sourceLookupService, SourceType.externs)
+
 			sourceSet.dependencyJSPath = new WebDependencyFileCollection(config, sourceLookupService, SourceType.js)
+
+			sourceSet.dependencyStaticsPath = new WebDependencyFileCollection(config, sourceLookupService, SourceType.statics)
+
 
 			sourceSet.runtimeJSPath = sourceSet.dependencyJSPath + sourceSet.js
 

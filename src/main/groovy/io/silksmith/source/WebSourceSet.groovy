@@ -32,4 +32,7 @@ interface WebSourceSet extends Named, Configurable<WebSourceSet>,WebSourceElemen
 
 	FileCollection getDependencyExternsPath()
 	void setDependencyExternsPath(FileCollection externsPath)
+
+	FileCollection getDependencyStaticsPath()
+	void setDependencyStaticsPath(FileCollection staticsPath)
 }

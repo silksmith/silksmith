@@ -121,29 +121,37 @@ class TestJSTask extends DefaultTask {
 							)
 				})
 
-				while (true) {
 
-					WatchKey key = watchService.take()
-
-					logger.info("Files changed")
-					//Poll all the events queued for the key
-					for ( WatchEvent<?> event: key.pollEvents()){
+				def th = Thread.start {
 
 
-						WatchEvent.Kind kind = event.kind()
+					while (true) {
 
-						logger.debug("Refresshing ($kind)")
-						driver.navigate().refresh()
+						logger.lifecycle("Watching")
+						WatchKey key = watchService.take()
 
-					}
-					//reset is invoked to put the key back to ready state
-					boolean valid = key.reset()
-					//If the key is invalid, just exit.
-					if ( !valid ) {
-						logger.warn("$key is invalid, ending watch")
-						break
+						logger.lifecycle("Files changed")
+						//Poll all the events queued for the key
+						for ( WatchEvent<?> event: key.pollEvents()){
+
+
+							WatchEvent.Kind kind = event.kind()
+
+							logger.lifecycle("Refresshing ($kind)")
+							driver.navigate().refresh()
+							logger.lifecycle("Refreshed")
+
+						}
+						//reset is invoked to put the key back to ready state
+						boolean valid = key.reset()
+						//If the key is invalid, just exit.
+						if ( !valid ) {
+							logger.warn("$key is invalid, ending watch")
+							break
+						}
 					}
 				}
+				th.join()
 			}catch(Exception e) {
 				logger.error("An error occured while watching", e)
 			}finally {
