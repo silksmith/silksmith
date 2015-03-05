@@ -16,9 +16,7 @@ version = "0.3.0-SNAPSHOT"
 group = "io.silksmith"
 
 repositories {
-    
     mavenCentral()
-	
 }
 ext{
 	 closureCompilerVersion = 'v20141215'
@@ -29,13 +27,14 @@ dependencies {
 
     compile 'org.eclipse.jetty:jetty-server:9.3.0.M1'
 	compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.3.201412180710-r'
-	
+
 	compile "com.google.javascript:closure-compiler:$closureCompilerVersion"
-	
+
 	compile 'org.jruby:jruby-complete:1.7.17'
 	compile 'org.webjars:mocha:2.0.1'
-	compile 'org.seleniumhq.selenium:selenium-java:2.44.0'
-	
+	compile 'org.seleniumhq.selenium:selenium-java:2.45.0'
+	compile 'org.seleniumhq.selenium:selenium-chrome-driver:2.45.0'
+
 	testCompile 'junit:junit:4.11'
 
 }
