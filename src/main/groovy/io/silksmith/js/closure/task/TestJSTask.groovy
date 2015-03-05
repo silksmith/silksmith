@@ -209,11 +209,8 @@ class TestJSTask extends DefaultTask {
 			def suiteComplete
 
 			suiteComplete = { suite ->
-
-
 				def allTestsComplete = suite.tests.every({
-					def complete = it.timedOut!=null || it.state !=null || it.pending !=null
-
+					def complete = it.state != null || it.timedOut || it.pending
 					return complete
 				})
 				return allTestsComplete && suite.suites.every(suiteComplete)
@@ -228,16 +225,11 @@ class TestJSTask extends DefaultTask {
 
 		JavascriptExecutor jsExec = driver as JavascriptExecutor
 
-		def result = jsExec.executeScript(jsExecution)
-
-		def suiteWalker
-
 		boolean ok = true
+		def result = jsExec.executeScript(jsExecution)
+		def suiteWalker
 		suiteWalker = { suite ->
-
-
 			def testsOk = suite.tests.each({
-
 				logger.debug "Checking $suite.title / it.title"
 				if(it.pending) {
 					logger.warn "Test '$it.title' is pending"
@@ -256,7 +248,6 @@ class TestJSTask extends DefaultTask {
 			})
 			suite.suites.each(suiteWalker)
 		}
-
 		result.suites.each(suiteWalker)
 		return ok
 	}
