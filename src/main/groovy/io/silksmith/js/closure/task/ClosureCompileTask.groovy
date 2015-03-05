@@ -244,42 +244,19 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 		// accessible via the Result.
 
 		logger.info("Running closure with args: $args")
-		def commandLineRunner  = new SilkSmithCommandLineRunner(args)
-
-		//		// Advanced mode is used here, but additional options could be set, too.
-		//		compileLevel.setOptionsForCompilationLevel(commandLineRunner.options)
-		//
-		//
-		//		commandLineRunner.options.languageIn = LanguageMode.ECMASCRIPT5
-		//		//options.generateExports = true
-		//
-		//		if(entryPoint) {
-		//
-		//			commandLineRunner.options.dependencyOptions.entryPoints << entryPoint
-		//
-		//			commandLineRunner.options.dependencyOptions.dependencyPruning = true
-		//			commandLineRunner.options.dependencyOptions.dependencySorting = true
-		//			commandLineRunner.options.dependencyOptions.moocherDropping = true
-		//			//options.newTypeInference = true
-		//		}
-
-		options.each commandLineRunner.&options
+		def commandLineRunner  = new SilkSmithCommandLineRunner(args as String[], options as Closure[])
 
 		if(commandLineRunner.shouldRunCompiler()) {
-
 			commandLineRunner.compileJS()
-		}else {
+		} else {
 			println "Command Line Runner should not run"
 		}
 		if(commandLineRunner.hasErrors()) {
 			throw new GradleException("Error occured during build")
 		}
-
-
 	}
 
 	def options(Closure c) {
 		options << c
-
 	}
 }

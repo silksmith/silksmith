@@ -58,13 +58,11 @@ class SassPlugin implements Plugin<Project>{
 					dependsOn installGemTask
 					dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
 				}
+
 				project.tasks.withType(WorkspaceServerTask){
-
-
 					dependsOn installGemTask
 
 					SassCSSHandler cssHandler = new SassCSSHandler([
-
 						sassRunnerProvider : compileTask,
 						configuration:config,
 						sourceLookupService:webSourceLookupService
