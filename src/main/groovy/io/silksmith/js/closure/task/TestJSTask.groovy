@@ -1,34 +1,27 @@
 package io.silksmith.js.closure.task
 
-
-
-
-
+import com.sun.nio.file.SensitivityWatchEventModifier
 import io.silksmith.SourceLookupService
 import io.silksmith.development.server.WorkspaceServer
 import io.silksmith.source.WebSourceSet
-
-import java.nio.file.FileSystems
-import java.nio.file.Path
-import java.nio.file.Paths
-import java.nio.file.StandardWatchEventKinds
-import java.nio.file.WatchEvent
-import java.nio.file.WatchKey
-import java.nio.file.WatchService
-
 import org.eclipse.jetty.server.Handler
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeDriverService
 import org.openqa.selenium.firefox.FirefoxDriver
+import org.openqa.selenium.remote.DesiredCapabilities
+import org.openqa.selenium.remote.RemoteWebDriver
 import org.openqa.selenium.support.ui.ExpectedCondition
 import org.openqa.selenium.support.ui.WebDriverWait
 
-import com.sun.nio.file.SensitivityWatchEventModifier
-
+import java.nio.file.*
 
 class TestJSTask extends DefaultTask {
 
@@ -85,96 +78,129 @@ class TestJSTask extends DefaultTask {
 	@TaskAction
 	def test() {
 
+        def drivers = []
+        def ok = false
 
-		boolean watch = project.hasProperty('watch')
-		server.start()
-		WebDriver driver = new FirefoxDriver()
+        try {
+            boolean watch = project.hasProperty('watch')
+            boolean firefox = project.hasProperty('firefox')
+            boolean chrome = project.hasProperty('chrome')
 
-		driver.get("${server.server.URI}TEST/MOCHA")
+            server.start()
 
-		if(watch) {
+            if (!firefox && !chrome) {
+                firefox = true;
+            }
 
-			try {
+            if (firefox) {
+                drivers << new FirefoxDriver()
+            }
+            if (chrome) {
+                String chromeDriverUrl = project.hasProperty('chromeDriverUrl') ? project.property("chromeDriverUrl") : null
+                String chromeDriverExe = project.hasProperty('chromeDriverExe') ? project.property("chromeDriverExe") : null
 
+                if (chromeDriverUrl) {
+                    // use existing chrome driver server
+                    drivers << new RemoteWebDriver(new URL(chromeDriverUrl), DesiredCapabilities.chrome());
+                } else if (chromeDriverExe) {
+                    // auto start chrome driver server
+                    def driverService = new ChromeDriverService.Builder().usingAnyFreePort().usingDriverExecutable(new File(chromeDriverExe)).build()
+                    drivers << new ChromeDriver(driverService);
+                } else if (System.hasProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY)) {
+                    // auto start chrome driver server with exe set in system properties
+                    drivers << new ChromeDriver()
+                } else {
+                    logger.warn("No chrome driver executable found. Download it and set its location via '-PchromeDriverExe=/Applications/chromedriver' or pass the URL of a running driver server via '-PchromeDriverUrl=http://localhost:9515'")
+                    logger.warn("Download URL for the Chrome driver executable: http://chromedriver.storage.googleapis.com")
+                }
+            }
 
-				def keysAndPath = [:]
+            if (drivers.empty) {
+                logger.error("No drivers available. Specify one or more by adding '-Pfirefox' or '-Pchrome'")
+                return;
+            }
 
-				WatchService watchService = FileSystems.getDefault().newWatchService()
-				testSourceSet.js.srcDirs.collect({ File srcDirFile ->
+            drivers.each {it.get("${server.server.URI}TEST/MOCHA")}
 
-					if(srcDirFile.isDirectory()) {
-						def dirs = [srcDirFile]
-						srcDirFile.eachDirRecurse dirs.&add
-						return dirs
-					}
-				}).grep().flatten().collect({
-					Paths.get(it.toURI())
-				}).each({ Path srcDirPath ->
+            if (watch) {
+                def keysAndPath = [:]
 
-					srcDirPath.register(
-							watchService,
-							[
-								StandardWatchEventKinds.ENTRY_MODIFY,
-								StandardWatchEventKinds.ENTRY_DELETE,
-								StandardWatchEventKinds.ENTRY_CREATE
-							] as WatchEvent.Kind[], SensitivityWatchEventModifier.HIGH
-							)
-				})
+                WatchService watchService = FileSystems.getDefault().newWatchService()
+                testSourceSet.js.srcDirs.collect({ File srcDirFile ->
 
+                    if (srcDirFile.isDirectory()) {
+                        def dirs = [srcDirFile]
+                        srcDirFile.eachDirRecurse dirs.&add
+                        return dirs
+                    }
+                }).grep().flatten().collect({
+                    Paths.get(it.toURI())
+                }).each({ Path srcDirPath ->
 
-				def th = Thread.start {
+                    srcDirPath.register(
+                            watchService,
+                            [
+                                    StandardWatchEventKinds.ENTRY_MODIFY,
+                                    StandardWatchEventKinds.ENTRY_DELETE,
+                                    StandardWatchEventKinds.ENTRY_CREATE
+                            ] as WatchEvent.Kind[], SensitivityWatchEventModifier.HIGH
+                    )
+                })
 
+                def th = Thread.start {
+                    while (true) {
+                        logger.lifecycle("Watching")
+                        WatchKey key = watchService.take()
 
-					while (true) {
+                        logger.lifecycle("Files changed")
 
-						logger.lifecycle("Watching")
-						WatchKey key = watchService.take()
+                        boolean refresh = false;
 
-						logger.lifecycle("Files changed")
-						//Poll all the events queued for the key
-						for ( WatchEvent<?> event: key.pollEvents()){
+                        //Poll all the events queued for the key
+                        for (WatchEvent<?> event : key.pollEvents()) {
+                            WatchEvent.Kind kind = event.kind()
+                            if (kind == StandardWatchEventKinds.OVERFLOW) {
+                                continue;
+                            }
+                            refresh = true;
+                        }
 
+                        if (refresh) {
+                            logger.lifecycle("Refreshing")
+                            drivers.each {it.navigate().refresh()}
+                            logger.lifecycle("Refreshed")
+                        }
 
-							WatchEvent.Kind kind = event.kind()
+                        //reset is invoked to put the key back to ready state
+                        boolean valid = key.reset()
+                        //If the key is invalid, just exit.
+                        if (!valid) {
+                            logger.warn("$key is invalid, ending watch")
+                            break
+                        }
 
-							logger.lifecycle("Refresshing ($kind)")
-							driver.navigate().refresh()
-							logger.lifecycle("Refreshed")
+                        sleep(200);
+                    }
+                }
+                th.join()
 
-						}
-						//reset is invoked to put the key back to ready state
-						boolean valid = key.reset()
-						//If the key is invalid, just exit.
-						if ( !valid ) {
-							logger.warn("$key is invalid, ending watch")
-							break
-						}
-					}
-				}
-				th.join()
-			}catch(Exception e) {
-				logger.error("An error occured while watching", e)
-			}finally {
-				driver.quit()
-				server.stop()
-			}
+            } else {
+                ok = drivers.collect({ executeTestInBrowser((WebDriver) it) }).every({ it })
+            }
 
-		}else {
-			def ok = executeTestInBrowser(driver)
-			driver.quit()
-			server.stop()
-			if(!ok) {
-				throw new GradleException("Some tasks did not pass")
-			}
-		}
+        } catch (Exception e) {
+            logger.error("An error occured while executing tests", e)
+        } finally {
+            drivers.each {it.quit()}
+            server.stop()
+        }
 
-
-
-
-
+        if (!ok) {
+            throw new GradleException("Some tests did not pass")
+        }
 	}
 
-	private executeTestInBrowser(WebDriver driver) {
+	def executeTestInBrowser(WebDriver driver) {
 		def condition = { WebDriver d ->
 			JavascriptExecutor jsExec = d as JavascriptExecutor
 
