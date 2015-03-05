@@ -186,9 +186,12 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 			"visibility"
 		]
 
-		// sets output filenames
+		closureArgs << "--source_map_format=V3"
 
+		// add user args, overwriting the default ones
+		closureArgs += args
 
+		// sets output filename
 		closureArgs += [
 			"--js_output_file",
 			dest
@@ -206,21 +209,15 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 			]
 		}
 
-		closureArgs << "--source_map_format=V3"
-
-
-		args += closureArgs
 		source.each {
-			args << "--js"
-			args << "$it.path"
+			closureArgs << "--js"
+			closureArgs << "$it.path"
 		}
 
 		externs.each {
-			args << "--externs"
-			args << "$it.path"
+			closureArgs << "--externs"
+			closureArgs << "$it.path"
 		}
-
-
 
 		//Result result = compiler.compile(jsExterns, jsSources, options)
 
@@ -243,8 +240,8 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 		// The compiler is responsible for generating the compiled code; it is not
 		// accessible via the Result.
 
-		logger.info("Running closure with args: $args")
-		def commandLineRunner  = new SilkSmithCommandLineRunner(args as String[], options as Closure[])
+		logger.info("Running closure with args: $closureArgs")
+		def commandLineRunner  = new SilkSmithCommandLineRunner(closureArgs as String[], options as Closure[])
 
 		if(commandLineRunner.shouldRunCompiler()) {
 			commandLineRunner.compileJS()
