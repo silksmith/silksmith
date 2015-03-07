@@ -56,7 +56,8 @@ build.gradle
 apply plugin : "silksmith-angular"
 
 ```
-Now you can put angular templates in ```src/main/ngTemplates``` and can annotate that need injection with ```@ngInject``
+Now you can put angular templates in ```src/main/ngTemplates``` and can annotate that need injection with ```@ngInject```
+
 
 
 ##Other plugins:
