@@ -1,11 +1,8 @@
 package io.silksmith.bundling
 
-
-
 class StaticsUsageDescriptor  {
 
-	def name
-
+	private String name
 	def files = []
 
 	StaticsUsageDescriptor(name) {

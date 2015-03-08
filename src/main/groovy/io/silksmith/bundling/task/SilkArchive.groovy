@@ -2,15 +2,15 @@ package io.silksmith.bundling.task
 
 import io.silksmith.Constants
 import io.silksmith.bundling.SilkManifest
+import io.silksmith.bundling.StaticDescriptor
 import io.silksmith.bundling.StaticsUsageDescriptor
-
-import org.gradle.util.ConfigureUtil
 
 import org.gradle.api.internal.file.collections.FileTreeAdapter
 import org.gradle.api.internal.file.collections.MapFileTree
 import org.gradle.api.internal.file.copy.CopySpecInternal
 import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.api.tasks.bundling.Zip
+import org.gradle.util.ConfigureUtil
 /**
  * Packages all web source elements
  * @author bruchmann
@@ -29,7 +29,7 @@ class SilkArchive extends Zip {
 
 	SilkArchive() {
 		extension = DEFAULT_EXTENSION
-		manifest = new SilkManifest(project.container(StaticsUsageDescriptor))
+		manifest = new SilkManifest(project.container(StaticsUsageDescriptor), project.container(StaticDescriptor))
 
 
 		rootSpec.from({
