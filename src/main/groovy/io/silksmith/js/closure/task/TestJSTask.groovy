@@ -8,13 +8,12 @@ import org.eclipse.jetty.server.Handler
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.artifacts.Configuration
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeDriverService
+import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.remote.RemoteWebDriver
@@ -25,7 +24,7 @@ import java.nio.file.*
 
 class TestJSTask extends DefaultTask {
 
-	def jsExecution = """return (function(rootSuite){
+    def jsExecution = """return (function(rootSuite){
 
   function addStat(suite){
     var testResults = suite.tests.map(function(t){
@@ -50,33 +49,33 @@ class TestJSTask extends DefaultTask {
 }(mocha.suite));
 """
 
-	SourceLookupService sourceLookupService
+    SourceLookupService sourceLookupService
 
 
-	WebSourceSet testSourceSet
+    WebSourceSet testSourceSet
 
 
+    @Lazy
+    WorkspaceServer server = {
 
-	@Lazy
-	WorkspaceServer server  = {
+        Configuration configuration = project.configurations[testSourceSet.configurationName]
+        [
+                project            : project,
+                sourceSet          : testSourceSet,
+                configuration      : configuration,
 
-		Configuration configuration = project.configurations[testSourceSet.configurationName]
-		[
-			project:project,
-			sourceSet: testSourceSet,
-			configuration:configuration,
-
-			sourceLookupService:sourceLookupService
-		]
-	}()
+                sourceLookupService: sourceLookupService
+        ]
+    }()
 
 
-	def handler(Handler handler) {
-		def s = server
-		server.handler(handler)
-	}
-	@TaskAction
-	def test() {
+    def handler(Handler handler) {
+        def s = server
+        server.handler(handler)
+    }
+
+    @TaskAction
+    def test() {
 
         def drivers = []
         def ok = false
@@ -96,21 +95,45 @@ class TestJSTask extends DefaultTask {
                 drivers << new FirefoxDriver()
             }
             if (chrome) {
+                WebDriver chromeDriver
                 String chromeDriverUrl = project.hasProperty('chromeDriverUrl') ? project.property("chromeDriverUrl") : null
                 String chromeDriverExe = project.hasProperty('chromeDriverExe') ? project.property("chromeDriverExe") : null
+                String chromeBin = project.hasProperty('chromeBin') ? project.property("chromeBin") : null
+
+                ChromeOptions options = new ChromeOptions()
+                if (chromeBin != null) {
+                    def chromeBinFile = new File(chromeBin)
+                    if (chromeBinFile.exists()) {
+                        options.setBinary(chromeBinFile)
+                    } else {
+                        logger.warn("Chrome binary not found at $chromeBinFile. Using default location")
+                    }
+                }
 
                 if (chromeDriverUrl) {
                     // use existing chrome driver server
-                    drivers << new RemoteWebDriver(new URL(chromeDriverUrl), DesiredCapabilities.chrome());
+                    def capabilities = DesiredCapabilities.chrome()
+                    capabilities.setCapability(ChromeOptions.CAPABILITY, options)
+                    chromeDriver = new RemoteWebDriver(new URL(chromeDriverUrl), capabilities)
                 } else if (chromeDriverExe) {
                     // auto start chrome driver server
-                    def driverService = new ChromeDriverService.Builder().usingAnyFreePort().usingDriverExecutable(new File(chromeDriverExe)).build()
-                    drivers << new ChromeDriver(driverService);
+                    def driverFile = new File(chromeDriverExe)
+                    if (driverFile.exists()) {
+                        def driverService = new ChromeDriverService.Builder().usingAnyFreePort().usingDriverExecutable(driverFile).build()
+                        chromeDriver = new ChromeDriver(driverService, options)
+                    } else {
+                        logger.warn("Chrome driver executable file not found at $chromeDriverExe.")
+                    }
                 } else if (System.hasProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY)) {
                     // auto start chrome driver server with exe set in system properties
-                    drivers << new ChromeDriver()
+                    chromeDriver = new ChromeDriver(options)
+                }
+
+                if (chromeDriver != null) {
+                    drivers << chromeDriver
                 } else {
-                    logger.warn("No chrome driver executable found. Download it and set its location via '-PchromeDriverExe=/Applications/chromedriver' or pass the URL of a running driver server via '-PchromeDriverUrl=http://localhost:9515'")
+                    logger.warn("No chrome driver executable found. Download it and set its location via '-PchromeDriverExe=/Applications/chromedriver' or pass the URL of a running driver server via '-PchromeDriverUrl=http://localhost:9515'.")
+                    logger.warn("Alternatively set the system property 'webdriver.chrome.driver' to the location of the executable.")
                     logger.warn("Download URL for the Chrome driver executable: http://chromedriver.storage.googleapis.com")
                 }
             }
@@ -120,7 +143,7 @@ class TestJSTask extends DefaultTask {
                 return;
             }
 
-            drivers.each {it.get("${server.server.URI}TEST/MOCHA")}
+            drivers.each { it.get("${server.server.URI}TEST/MOCHA") }
 
             if (watch) {
                 def keysAndPath = [:]
@@ -167,7 +190,7 @@ class TestJSTask extends DefaultTask {
 
                         if (refresh) {
                             logger.lifecycle("Refreshing")
-                            drivers.each {it.navigate().refresh()}
+                            drivers.each { it.navigate().refresh() }
                             logger.lifecycle("Refreshed")
                         }
 
@@ -191,65 +214,65 @@ class TestJSTask extends DefaultTask {
         } catch (Exception e) {
             logger.error("An error occured while executing tests", e)
         } finally {
-            drivers.each {it.quit()}
+            drivers.each { it.quit() }
             server.stop()
         }
 
         if (!ok) {
             throw new GradleException("Some tests did not pass")
         }
-	}
+    }
 
-	def executeTestInBrowser(WebDriver driver) {
-		def condition = { WebDriver d ->
-			JavascriptExecutor jsExec = d as JavascriptExecutor
+    def executeTestInBrowser(WebDriver driver) {
+        def condition = { WebDriver d ->
+            JavascriptExecutor jsExec = d as JavascriptExecutor
 
-			def result = jsExec.executeScript(jsExecution)
+            def result = jsExec.executeScript(jsExecution)
 
-			def suiteComplete
+            def suiteComplete
 
-			suiteComplete = { suite ->
-				def allTestsComplete = suite.tests.every({
-					def complete = it.state != null || it.timedOut || it.pending
-					return complete
-				})
-				return allTestsComplete && suite.suites.every(suiteComplete)
-			}
+            suiteComplete = { suite ->
+                def allTestsComplete = suite.tests.every({
+                    def complete = it.state != null || it.timedOut || it.pending
+                    return complete
+                })
+                return allTestsComplete && suite.suites.every(suiteComplete)
+            }
 
-			return result.suites.every(suiteComplete)
-		} as ExpectedCondition<Boolean>
-		//println ((JavascriptExecutor)driver).executeScript()
-		(new WebDriverWait(driver, 1000)).until(condition)
+            return result.suites.every(suiteComplete)
+        } as ExpectedCondition<Boolean>
+        //println ((JavascriptExecutor)driver).executeScript()
+        (new WebDriverWait(driver, 1000)).until(condition)
 
 
 
-		JavascriptExecutor jsExec = driver as JavascriptExecutor
+        JavascriptExecutor jsExec = driver as JavascriptExecutor
 
-		boolean ok = true
-		def result = jsExec.executeScript(jsExecution)
-		def suiteWalker
-		suiteWalker = { suite ->
-			def testsOk = suite.tests.each({
-				logger.debug "Checking $suite.title / it.title"
-				if(it.pending) {
-					logger.warn "Test '$it.title' is pending"
-				}
-				if(it.state == "failed") {
-					logger.error "Test '$it.title' failed!"
-				}
-				if(it.timedOut) {
-					logger.error "Test '$it.title' timeout!"
-				}
-				def testOk = it.state == "passed" || it.pending
+        boolean ok = true
+        def result = jsExec.executeScript(jsExecution)
+        def suiteWalker
+        suiteWalker = { suite ->
+            def testsOk = suite.tests.each({
+                logger.debug "Checking $suite.title / it.title"
+                if (it.pending) {
+                    logger.warn "Test '$it.title' is pending"
+                }
+                if (it.state == "failed") {
+                    logger.error "Test '$it.title' failed!"
+                }
+                if (it.timedOut) {
+                    logger.error "Test '$it.title' timeout!"
+                }
+                def testOk = it.state == "passed" || it.pending
 
-				logger.debug "Result OK: $testOk"
+                logger.debug "Result OK: $testOk"
 
-				ok = ok && testOk
-			})
-			suite.suites.each(suiteWalker)
-		}
-		result.suites.each(suiteWalker)
-		return ok
-	}
+                ok = ok && testOk
+            })
+            suite.suites.each(suiteWalker)
+        }
+        result.suites.each(suiteWalker)
+        return ok
+    }
 }
 
