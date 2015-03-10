@@ -70,7 +70,13 @@ class TestJSTask extends DefaultTask {
             server.start()
 
             if (!firefox && !chrome && !sauce) {
-                firefox = true;
+                if ("true".equals(System.getenv('CI'))
+                        || "true".equals(System.getenv('TRAVIS'))
+                        || "true".equals(System.getenv('CONTINUOUS_INTEGRATION'))) {
+                    sauce = true;
+                } else {
+                    firefox = true;
+                }
             }
 
             if (sauce) {
