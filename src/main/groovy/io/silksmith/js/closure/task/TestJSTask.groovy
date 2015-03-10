@@ -74,13 +74,17 @@ class TestJSTask extends DefaultTask {
             }
 
             if (sauce) {
-                String sauseUsername = project.hasProperty('sauceUsername') ? project.property("sauceUsername") : System.getenv('SAUCE_USERNAME')
-                String sauseAccessKey = project.hasProperty('sauceAccessKey') ? project.property("sauceAccessKey") : System.getenv('SAUCE_ACCESS_KEY')
+                String sauceUsername = project.hasProperty('sauceUsername') ? project.property("sauceUsername") : System.getenv('SAUCE_USERNAME')
+                String sauceAccessKey = project.hasProperty('sauceAccessKey') ? project.property("sauceAccessKey") : System.getenv('SAUCE_ACCESS_KEY')
+                String sauceTunnelIdentifier = System.getenv('TRAVIS_JOB_NUMBER')
 
                 def capabilities = DesiredCapabilities.chrome();
                 capabilities.setCapability("platform", "OS X 10.10");
                 capabilities.setCapability("version", "40.0");
-                drivers << new RemoteWebDriver(new URL("http://$sauseUsername:$sauseAccessKey@ondemand.saucelabs.com:80/wd/hub"), capabilities)
+                if (sauceTunnelIdentifier) {
+                    capabilities.setCapability("tunnel-identifier", sauceTunnelIdentifier);
+                }
+                drivers << new RemoteWebDriver(new URL("http://$sauceUsername:$sauceAccessKey@localhost:4445/wd/hub"), capabilities)
             }
             if (firefox) {
                 drivers << new FirefoxDriver()
