@@ -64,13 +64,24 @@ class TestJSTask extends DefaultTask {
             boolean watch = project.hasProperty('watch')
             boolean firefox = project.hasProperty('firefox')
             boolean chrome = project.hasProperty('chrome')
+            boolean sauce = project.hasProperty('sauce')
+
 
             server.start()
 
-            if (!firefox && !chrome) {
+            if (!firefox && !chrome && !sauce) {
                 firefox = true;
             }
 
+            if (sauce) {
+                String sauseUsername = project.hasProperty('sauceUsername') ? project.property("sauceUsername") : System.getenv('SAUCE_USERNAME')
+                String sauseAccessKey = project.hasProperty('sauceAccessKey') ? project.property("sauceAccessKey") : System.getenv('SAUCE_ACCESS_KEY')
+
+                def capabilities = DesiredCapabilities.chrome();
+                capabilities.setCapability("platform", "OS X 10.10");
+                capabilities.setCapability("version", "40.0");
+                drivers << new RemoteWebDriver(new URL("http://$sauseUsername:$sauseAccessKey@ondemand.saucelabs.com:80/wd/hub"), capabilities)
+            }
             if (firefox) {
                 drivers << new FirefoxDriver()
             }
