@@ -73,13 +73,9 @@ class SassPlugin implements Plugin<Project>{
 
 
 				def assembleCSSTaskName = SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet,ASSEMBLE_CSS_BASE_NAME)
-
 				def assembleCSSoutputDir = project.file("$project.buildDir/assembledCSS/$sourceSet.name")
-				assembleCSSoutputDir.mkdirs()
-
-
 				def assembleCSSTask = project.task(assembleCSSTaskName)<< {
-
+					assembleCSSoutputDir.mkdirs()
 
 					def cssMainOutput = project.fileTree(compileTask.outputDir).files.iterator().next()
 					if(project.fileTree(compileTask.outputDir).files.size()>1) {
