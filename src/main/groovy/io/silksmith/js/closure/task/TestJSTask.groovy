@@ -83,12 +83,16 @@ class TestJSTask extends DefaultTask {
                 String sauceUsername = project.hasProperty('sauceUsername') ? project.property("sauceUsername") : System.getenv('SAUCE_USERNAME')
                 String sauceAccessKey = project.hasProperty('sauceAccessKey') ? project.property("sauceAccessKey") : System.getenv('SAUCE_ACCESS_KEY')
                 String sauceTunnelIdentifier = System.getenv('TRAVIS_JOB_NUMBER')
+                String sauceBuildIdentifier = System.getenv('TRAVIS_BUILD_NUMBER')
 
                 def capabilities = DesiredCapabilities.chrome();
                 capabilities.setCapability("platform", "OS X 10.10");
                 capabilities.setCapability("version", "40.0");
                 if (sauceTunnelIdentifier) {
                     capabilities.setCapability("tunnel-identifier", sauceTunnelIdentifier);
+                }
+                if (sauceBuildIdentifier) {
+                    capabilities.setCapability("build", sauceBuildIdentifier);
                 }
                 drivers << new RemoteWebDriver(new URL("http://$sauceUsername:$sauceAccessKey@localhost:4445/wd/hub"), capabilities)
             }
