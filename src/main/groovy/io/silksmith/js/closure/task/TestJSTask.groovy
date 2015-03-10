@@ -9,6 +9,8 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.TaskAction
+import org.gradle.logging.StyledTextOutput
+import org.gradle.logging.StyledTextOutputFactory
 import org.openqa.selenium.JavascriptExecutor
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
@@ -24,40 +26,19 @@ import java.nio.file.*
 
 class TestJSTask extends DefaultTask {
 
-    def jsExecution = """return (function(rootSuite){
+    def jsExecution = "return window.silksmith.results;"
 
-  function addStat(suite){
-    var testResults = suite.tests.map(function(t){
-      return {
-        pending: t.pending,
-        timedOut: t.timedOut,
-        title: t.title,
-        type: t.type,
-		state : t.state
-      };
-    });
-
-    return {
-      title: suite.title,
-      pending : suite.pending,
-      root: suite.root,
-      tests : testResults,
-      suites : suite.suites.map(addStat.bind(this))
-    };
-  }
-  return addStat(rootSuite);
-}(mocha.suite));
-"""
+    def symbols = [
+        "ok": '✓',
+        "err": '✖',
+        "dot": '․'
+    ];
 
     SourceLookupService sourceLookupService
-
-
     WebSourceSet testSourceSet
-
 
     @Lazy
     WorkspaceServer server = {
-
         Configuration configuration = project.configurations[testSourceSet.configurationName]
         [
                 project            : project,
@@ -67,7 +48,6 @@ class TestJSTask extends DefaultTask {
                 sourceLookupService: sourceLookupService
         ]
     }()
-
 
     def handler(Handler handler) {
         def s = server
@@ -226,52 +206,34 @@ class TestJSTask extends DefaultTask {
     def executeTestInBrowser(WebDriver driver) {
         def condition = { WebDriver d ->
             JavascriptExecutor jsExec = d as JavascriptExecutor
-
-            def result = jsExec.executeScript(jsExecution)
-
-            def suiteComplete
-
-            suiteComplete = { suite ->
-                def allTestsComplete = suite.tests.every({
-                    def complete = it.state != null || it.timedOut || it.pending
-                    return complete
-                })
-                return allTestsComplete && suite.suites.every(suiteComplete)
-            }
-
-            return result.suites.every(suiteComplete)
+            def results = jsExec.executeScript(jsExecution)
+            return results.complete
         } as ExpectedCondition<Boolean>
         //println ((JavascriptExecutor)driver).executeScript()
         (new WebDriverWait(driver, 1000)).until(condition)
 
 
-
         JavascriptExecutor jsExec = driver as JavascriptExecutor
+        def results = jsExec.executeScript(jsExecution)
 
-        boolean ok = true
-        def result = jsExec.executeScript(jsExecution)
-        def suiteWalker
-        suiteWalker = { suite ->
-            def testsOk = suite.tests.each({
-                logger.debug "Checking $suite.title / it.title"
-                if (it.pending) {
-                    logger.warn "Test '$it.title' is pending"
-                }
-                if (it.state == "failed") {
-                    logger.error "Test '$it.title' failed!"
-                }
-                if (it.timedOut) {
-                    logger.error "Test '$it.title' timeout!"
-                }
-                def testOk = it.state == "passed" || it.pending
+        // stats: {suites: 0, tests: 0, passes: 0, pending: 0, failures: 0};
+        boolean ok = results.stats.failures == 0
 
-                logger.debug "Result OK: $testOk"
-
-                ok = ok && testOk
-            })
-            suite.suites.each(suiteWalker)
+        def out = services.get(StyledTextOutputFactory).create(getClass())
+        if (ok) {
+            out.withStyle(StyledTextOutput.Style.Success).println("$symbols.ok $results.stats.passes tests completed")
+            if (results.stats.pending > 0) {
+                out.withStyle(StyledTextOutput.Style.Success).println("$symbols.dot $results.stats.pending tests pending")
+            }
+        } else {
+            out.withStyle(StyledTextOutput.Style.Failure).println("$symbols.err $results.stats.failures of $results.stats.tests tests failed:")
+            out.println("")
+            results.failures.each {
+                out.withStyle(StyledTextOutput.Style.Normal).println("$it.fullTitle: $it.err.message")
+                out.withStyle(StyledTextOutput.Style.Normal).println("$it.err.stack")
+                out.println("")
+            }
         }
-        result.suites.each(suiteWalker)
         return ok
     }
 }
