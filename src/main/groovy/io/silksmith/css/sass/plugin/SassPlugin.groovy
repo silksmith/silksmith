@@ -78,7 +78,7 @@ class SassPlugin implements Plugin<Project>{
 					assembleCSSoutputDir.mkdirs()
 
 					def cssMainOutput = project.fileTree(compileTask.outputDir).files.iterator().next()
-					if(project.fileTree(compileTask.outputDir).files.size()>1) {
+					if(project.fileTree(dir: compileTask.outputDir, include: "**/*.css").files.size()>1) {
 						logger.warn("SCSS output dir has more than one file, concating css only in first, ($cssMainOutput)")
 					}
 					def outputFile = project.file("$assembleCSSoutputDir/$cssMainOutput.name")
