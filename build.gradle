@@ -16,17 +16,13 @@ targetCompatibility = 1.8
 version = "0.4.0-SNAPSHOT"
 group = "io.silksmith"
 
-repositories {
-    mavenCentral()
-}
-ext{
-	 closureCompilerVersion = 'v20141215'
-}
+repositories { mavenCentral() }
+ext{ closureCompilerVersion = 'v20141215' }
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
+	compile gradleApi()
+	compile localGroovy()
 
-    compile 'org.eclipse.jetty:jetty-server:9.3.0.M1'
+	compile 'org.eclipse.jetty:jetty-server:9.3.0.M1'
 	compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.3.201412180710-r'
 
 	compile "com.google.javascript:closure-compiler:$closureCompilerVersion"
@@ -37,7 +33,6 @@ dependencies {
 	compile 'org.seleniumhq.selenium:selenium-chrome-driver:2.45.0'
 
 	testCompile 'junit:junit:4.11'
-
 }
 task wrapper(type: Wrapper) {
 	gradleVersion ="2.3"
@@ -45,18 +40,16 @@ task wrapper(type: Wrapper) {
 }
 publishing {
 	publications {
-		maven(MavenPublication) {
-			from components.java
-		}
+		maven(MavenPublication) { from components.java }
 	}
 	repositories {
 		maven {
 			name 'jcenterSnapshot'
 			// change to point to your repo, e.g. http://my.org/repo
 			url "http://oss.jfrog.org/artifactory/oss-snapshot-local"
-			
+
 			credentials {
-				
+
 				username = bintray_net_user
 				password = bintray_net_key
 			}
@@ -71,21 +64,19 @@ artifactory {
 			username = "${artifactory_user}"
 			password = "${artifactory_password}"
 			maven = true
-			 
+
 		}
-		defaults {
-			//This closure defines defaults for all 'artifactoryPublish' tasks of all projects the plugin is applied to
-			publications ('maven')
-		}
+		defaults { //This closure defines defaults for all 'artifactoryPublish' tasks of all projects the plugin is applied to
+			publications ('maven') }
 	}
 }
 
 bintray {
-		
+
 	user = bintray_net_user
 	key = bintray_net_key
-	
-	
+
+
 	publications = ["maven"]
 	pkg {
 		repo = 'maven'
@@ -104,20 +95,27 @@ pluginBundle {
 	website = 'http://silksmith.io'
 	vcsUrl = 'https://github.com/silksmith/silksmith'
 	description = 'JS and CSS with Gradle'
-	tags = ['js', 'closure compiler', 'javascript', 'scss', 'css', 'dependency resolution']
-  
+	tags = [
+		'js',
+		'closure compiler',
+		'javascript',
+		'scss',
+		'css',
+		'dependency resolution'
+	]
+
 	plugins {
-	  silksmithPlugin {
-		id = 'io.silksmith.plugin'
-		displayName = 'JS and SASS compiling'
-	  },
-	  silksmithAngularPlugin {
+		silksmithPlugin {
+			id = 'io.silksmith.plugin'
+			displayName = 'JS and SASS compiling'
+		}
+		silksmithAngularPlugin {
 			id = 'io.silksmith.angular-plugin'
 			displayName = 'Angular Support for Silksmith'
-		  }
-	  /*silksmithBasePlugin {
-		  id = 'io.silksmith.base-plugin'
-		  displayName = 'All plugins'
-	  }*/
+		}
+		/*silksmithBasePlugin {
+		 id = 'io.silksmith.base-plugin'
+		 displayName = 'All plugins'
+		 }*/
 	}
 }
