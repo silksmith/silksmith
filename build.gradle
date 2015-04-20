@@ -1,6 +1,7 @@
 plugins {
 	id "com.jfrog.bintray" version "1.1"
 	id "com.jfrog.artifactory" version "3.0.1"
+	id "com.gradle.plugin-publish" version "0.9.0"
 }
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
@@ -12,13 +13,11 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 
-version = "0.2.0"
+version = "0.3.0"
 group = "io.silksmith"
 
 repositories {
-    
     mavenCentral()
-	
 }
 ext{
 	 closureCompilerVersion = 'v20141215'
@@ -29,13 +28,14 @@ dependencies {
 
     compile 'org.eclipse.jetty:jetty-server:9.3.0.M1'
 	compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.3.201412180710-r'
-	
+
 	compile "com.google.javascript:closure-compiler:$closureCompilerVersion"
-	
+
 	compile 'org.jruby:jruby-complete:1.7.17'
 	compile 'org.webjars:mocha:2.0.1'
-	compile 'org.seleniumhq.selenium:selenium-java:2.44.0'
-	
+	compile 'org.seleniumhq.selenium:selenium-java:2.45.0'
+	compile 'org.seleniumhq.selenium:selenium-chrome-driver:2.45.0'
+
 	testCompile 'junit:junit:4.11'
 
 }
@@ -96,6 +96,28 @@ bintray {
 		vcsUrl = 'https://github.com/silksmith/silksmith.git'
 		licenses = ['MIT']
 		publicDownloadNumbers = true
-		
+		//version.attributes = [ 'gradle-plugin': 'io.silksmith:silksmith:silksmith' ]
+	}
+}
+
+pluginBundle {
+	website = 'http://silksmith.io'
+	vcsUrl = 'https://github.com/silksmith/silksmith'
+	description = 'JS and CSS with Gradle'
+	tags = ['js', 'closure compiler', 'javascript', 'scss', 'css', 'dependency resolution']
+  
+	plugins {
+	  silksmithPlugin {
+		id = 'io.silksmith.plugin'
+		displayName = 'JS and SASS compiling'
+	  },
+	  silksmithAngularPlugin {
+			id = 'io.silksmith.angular-plugin'
+			displayName = 'Angular Support for Silksmith'
+		  }
+	  /*silksmithBasePlugin {
+		  id = 'io.silksmith.base-plugin'
+		  displayName = 'All plugins'
+	  }*/
 	}
 }

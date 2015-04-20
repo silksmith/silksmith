@@ -1,10 +1,16 @@
 ##Silk Smith
+
+[![Join the chat at https://gitter.im/silksmith/silksmith](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/silksmith/silksmith?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 JS, SCSS and stuff
 
 ##Setup
 build.gradle
 ```
-apply plugin : "silksmith"
+
+plugins {
+	id "io.silksmith.plugin" version "0.3.0"
+}
 
 ```
 ##JavaScript
@@ -53,10 +59,13 @@ if you want to run the tests in watch mode append ```-Pwatch```
 ###Angular
 build.gradle
 ```
-apply plugin : "silksmith-angular"
+plugins {
+	id "io.silksmith.plugin-angular" version "0.3.0"
+}
 
 ```
-Now you can put angular templates in ```src/main/ngTemplates``` and can annotate that need injection with ```@ngInject``
+Now you can put angular templates in ```src/main/ngTemplates``` and can annotate that need injection with ```@ngInject```
+
 
 
 ##Other plugins:

@@ -15,13 +15,13 @@ import org.gradle.api.tasks.TaskAction
 
 class ScssCompile extends DefaultTask implements SassRunnerProvider{
 
-
 	Configuration jrubyConfig
 
 	Configuration configuration
 
 	@InputDirectory
 	def gemInstallDir
+
 	@Optional
 	@InputDirectory
 	def inputDir
@@ -33,7 +33,6 @@ class ScssCompile extends DefaultTask implements SassRunnerProvider{
 
 	@Lazy
 	SassRunner sassRunner = {
-
 		[
 			sourceLookupService:sourceLookupService,
 			project:project,
@@ -47,8 +46,6 @@ class ScssCompile extends DefaultTask implements SassRunnerProvider{
 
 	@TaskAction
 	def compile() {
-
-
 		SassMode mode = project.hasProperty("watch")?SassMode.watch:SassMode.update
 		sassRunner.run(mode)
 	}

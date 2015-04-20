@@ -63,7 +63,7 @@ class DepsJSHandler extends AbstractHandler {
 
 					def depsPath = filePathBuilder.jsPathFor(mcid,fileInfo.file)
 
-					response.writer << """goog.addDependency('$depsPath', [$provides], [$requires]);
+					response.writer << """goog.addDependency('$depsPath', [$provides], [$requires], $fileInfo.isModule);
 """
 				}
 			})
@@ -91,7 +91,7 @@ class DepsJSHandler extends AbstractHandler {
 						def depsPath = filePathBuilder.jsPathFor(projectComponentId, wss,  srcDir, index, fileInfo.file) -"/"
 
 						//ClosureJSPathUtil.projectJSDepsPath(otherProject, sourceSetName,srcDir, fileInfo )
-						response.writer << """goog.addDependency('$depsPath', [$provides], [$requires]);
+						response.writer << """goog.addDependency('$depsPath', [$provides], [$requires], $fileInfo.isModule);
 """
 					}
 				}

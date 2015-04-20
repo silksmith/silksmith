@@ -81,8 +81,8 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 
 		def mainAssembleJSTaskName = SilkSmithBasePlugin.getSourceSetNamedTask(mainSourceSet, ASSEMBLE_JS_BASE_NAME)
 		def assembleOutputDir = project.file("$project.buildDir/assembledJS/$mainSourceSet.name")
-		assembleOutputDir.mkdirs()
 		def assembleJSTask = project.task(mainAssembleJSTaskName)<< {
+			assembleOutputDir.mkdirs()
 
 			def outputFile = project.file("$assembleOutputDir/$mainCompileTask.dest.name")
 			outputFile.withWriter { Writer writer ->

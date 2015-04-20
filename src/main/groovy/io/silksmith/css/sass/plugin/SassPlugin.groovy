@@ -58,13 +58,11 @@ class SassPlugin implements Plugin<Project>{
 					dependsOn installGemTask
 					dependsOn SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet, SilkSmithBasePlugin.ENSURE_EXTRACTED_ARTIFACTS)
 				}
+
 				project.tasks.withType(WorkspaceServerTask){
-
-
 					dependsOn installGemTask
 
 					SassCSSHandler cssHandler = new SassCSSHandler([
-
 						sassRunnerProvider : compileTask,
 						configuration:config,
 						sourceLookupService:webSourceLookupService
@@ -75,16 +73,13 @@ class SassPlugin implements Plugin<Project>{
 
 
 				def assembleCSSTaskName = SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet,ASSEMBLE_CSS_BASE_NAME)
-
 				def assembleCSSoutputDir = project.file("$project.buildDir/assembledCSS/$sourceSet.name")
-				assembleCSSoutputDir.mkdirs()
-
-
 				def assembleCSSTask = project.task(assembleCSSTaskName)<< {
+					assembleCSSoutputDir.mkdirs()
 
-
-					def cssMainOutput = project.fileTree(compileTask.outputDir).files.iterator().next()
-					if(project.fileTree(compileTask.outputDir).files.size()>1) {
+					def cssFiles = project.fileTree(dir: compileTask.outputDir, include: "**/*.css").files
+					def cssMainOutput = cssFiles.first()
+					if(cssFiles.size()>1) {
 						logger.warn("SCSS output dir has more than one file, concating css only in first, ($cssMainOutput)")
 					}
 					def outputFile = project.file("$assembleCSSoutputDir/$cssMainOutput.name")

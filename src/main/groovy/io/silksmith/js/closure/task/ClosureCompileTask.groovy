@@ -186,9 +186,12 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 			"visibility"
 		]
 
-		// sets output filenames
+		closureArgs << "--source_map_format=V3"
 
+		// add user args, overwriting the default ones
+		closureArgs += args
 
+		// sets output filename
 		closureArgs += [
 			"--js_output_file",
 			dest
@@ -206,21 +209,15 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 			]
 		}
 
-		closureArgs << "--source_map_format=V3"
-
-
-		args += closureArgs
 		source.each {
-			args << "--js"
-			args << "$it.path"
+			closureArgs << "--js"
+			closureArgs << "$it.path"
 		}
 
 		externs.each {
-			args << "--externs"
-			args << "$it.path"
+			closureArgs << "--externs"
+			closureArgs << "$it.path"
 		}
-
-
 
 		//Result result = compiler.compile(jsExterns, jsSources, options)
 
@@ -243,43 +240,20 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 		// The compiler is responsible for generating the compiled code; it is not
 		// accessible via the Result.
 
-		logger.info("Running closure with args: $args")
-		def commandLineRunner  = new SilkSmithCommandLineRunner(args)
-
-		//		// Advanced mode is used here, but additional options could be set, too.
-		//		compileLevel.setOptionsForCompilationLevel(commandLineRunner.options)
-		//
-		//
-		//		commandLineRunner.options.languageIn = LanguageMode.ECMASCRIPT5
-		//		//options.generateExports = true
-		//
-		//		if(entryPoint) {
-		//
-		//			commandLineRunner.options.dependencyOptions.entryPoints << entryPoint
-		//
-		//			commandLineRunner.options.dependencyOptions.dependencyPruning = true
-		//			commandLineRunner.options.dependencyOptions.dependencySorting = true
-		//			commandLineRunner.options.dependencyOptions.moocherDropping = true
-		//			//options.newTypeInference = true
-		//		}
-
-		options.each commandLineRunner.&options
+		logger.info("Running closure with args: $closureArgs")
+		def commandLineRunner  = new SilkSmithCommandLineRunner(closureArgs as String[], options as Closure[])
 
 		if(commandLineRunner.shouldRunCompiler()) {
-
 			commandLineRunner.compileJS()
-		}else {
+		} else {
 			println "Command Line Runner should not run"
 		}
 		if(commandLineRunner.hasErrors()) {
 			throw new GradleException("Error occured during build")
 		}
-
-
 	}
 
 	def options(Closure c) {
 		options << c
-
 	}
 }
