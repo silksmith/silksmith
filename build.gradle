@@ -9,7 +9,6 @@ apply plugin: 'maven'
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
-apply plugin: "com.gradle.plugin-publish"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -111,7 +110,11 @@ pluginBundle {
 	  silksmithPlugin {
 		id = 'io.silksmith.plugin'
 		displayName = 'JS and SASS compiling'
-	  }
+	  },
+	  silksmithAngularPlugin {
+			id = 'io.silksmith.angular-plugin'
+			displayName = 'Angular Support for Silksmith'
+		  }
 	  /*silksmithBasePlugin {
 		  id = 'io.silksmith.base-plugin'
 		  displayName = 'All plugins'

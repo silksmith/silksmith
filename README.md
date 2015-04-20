@@ -7,7 +7,10 @@ JS, SCSS and stuff
 ##Setup
 build.gradle
 ```
-apply plugin : "silksmith"
+
+plugins {
+	id "io.silksmith.plugin" version "0.3.0"
+}
 
 ```
 ##JavaScript
@@ -56,7 +59,9 @@ if you want to run the tests in watch mode append ```-Pwatch```
 ###Angular
 build.gradle
 ```
-apply plugin : "silksmith-angular"
+plugins {
+	id "io.silksmith.plugin-angular" version "0.3.0"
+}
 
 ```
 Now you can put angular templates in ```src/main/ngTemplates``` and can annotate that need injection with ```@ngInject```
