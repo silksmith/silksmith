@@ -1,4 +1,5 @@
-##Silk Smith
+##silksmith
+Compile your JS code with Google's Closure Compiler, generate CSS with SASS. Build it with Gradle!
 
 [![Join the chat at https://gitter.im/silksmith/silksmith](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/silksmith/silksmith?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
