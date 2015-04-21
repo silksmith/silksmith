@@ -9,7 +9,7 @@ build.gradle
 ```
 
 plugins {
-	id "io.silksmith.plugin" version "0.3.0"
+	id "io.silksmith.plugin" version "0.3.2"
 }
 
 ```
@@ -44,7 +44,19 @@ server {
 	// for example if your index.html is in src/main/resources/static
 	dir file("src/main/resources/static") 
 }
+```
+###Dependencies
+The main configuration is named ```web``` and for tests you can use ```testWeb```
+```
+repositories {
+    maven { url="http://dl.bintray.com/silksmith-io/silk"} // here are some packages on bintray
+}
 
+dependencies {
+    web "io.silksmith.libs:closure-base:1.0.0+smith.+" //goog lib (required)
+    web "io.silksmith.libs:bootstrap-sass:3.3.3+smith.+" //lets use the sass sources of bootstrap
+    web "io.silksmith.libs:jquery:1.11.2+smith.+" //jquery 
+}
 ```
 
 ###Testing
@@ -60,7 +72,7 @@ if you want to run the tests in watch mode append ```-Pwatch```
 build.gradle
 ```
 plugins {
-	id "io.silksmith.plugin-angular" version "0.3.0"
+	id "io.silksmith.plugin-angular" version "0.3.2"
 }
 
 ```
