@@ -13,7 +13,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 
-version = "0.3.2"
+version = "0.3.3"
 group = "io.silksmith"
 
 repositories { mavenCentral() }
@@ -110,7 +110,7 @@ pluginBundle {
 			displayName = 'JS and SASS compiling'
 		}
 		silksmithAngularPlugin {
-			id = 'io.silksmith.angular-plugin'
+			id = 'io.silksmith.plugin-angular'
 			displayName = 'Angular Support for Silksmith'
 		}
 		/*silksmithBasePlugin {
