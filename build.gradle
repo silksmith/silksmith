@@ -110,7 +110,7 @@ pluginBundle {
 			displayName = 'JS and SASS compiling'
 		}
 		silksmithAngularPlugin {
-			id = 'io.silksmith.angular-plugin'
+			id = 'io.silksmith.plugin-angular'
 			displayName = 'Angular Support for Silksmith'
 		}
 		/*silksmithBasePlugin {
