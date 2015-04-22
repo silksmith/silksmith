@@ -6,6 +6,8 @@ Compile your JS code with Google's Closure Compiler, generate CSS with SASS. Bui
 JS, SCSS and stuff
 
 ##Setup
+See this sample app to get started https://github.com/silksmith/sample-app
+
 build.gradle
 ```
 
