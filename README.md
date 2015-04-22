@@ -12,7 +12,7 @@ build.gradle
 ```
 
 plugins {
-	id "io.silksmith.plugin" version "0.3.2"
+	id "io.silksmith.plugin" version "0.3.3"
 }
 
 ```
@@ -81,7 +81,9 @@ plugins {
 ```
 Now you can put angular templates in ```src/main/ngTemplates``` and can annotate that need injection with ```@ngInject```
 
-
+##Links
+- Google hardcore JS "mininfier" https://developers.google.com/closure/compiler/
+- SASS/SCSS http://sass-lang.com
 
 ##Other plugins:
 
