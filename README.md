@@ -83,16 +83,15 @@ publishing {
 }
 ```
 
-####Publishing third libraries
+####Publishing third party libraries
 Silksmith comes with two helper class to package existing libraries like jQuery, Bootstrap etc.
 #####DownloadFiles Task
-If the library is provided somewhere in the web to download, you can define a download task and use its output as source dir
+If the library is provided somewhere in the web to download, you can define a download task and use its output as source dir.
 ````
 task download(type: io.silksmith.task.DownloadFiles) {
     url = "http://sinonjs.org/releases/sinon-1.12.1.js"
 
 }
-version = "1.12.1+smith.0"
 silksmith.source {
     main {
         statics {
@@ -121,8 +120,6 @@ silksmith.source {
     }
 }
 ```
-
-
 
 
 ##Extension
