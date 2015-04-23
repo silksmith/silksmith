@@ -75,7 +75,7 @@ if you want to run the tests in watch mode append ```-Pwatch```
 build.gradle
 ```
 plugins {
-	id "io.silksmith.plugin-angular" version "0.3.2"
+	id "io.silksmith.plugin-angular" version "0.3.3"
 }
 
 ```
