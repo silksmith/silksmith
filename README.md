@@ -8,7 +8,7 @@ JS, SCSS and stuff
 TBD
 ###Resource Types
 ####Statics
-Statics are resoureces that are already in der distributable form and you would usually serve in a public directory and include them in your ```<script>```, ```<link rel="stylesheet">```. For example the jQuery library, a precompiled Bootstrap CSS or its icon fonts.
+Statics are resoureces that are already in there distributable form and you would usually serve them in a public directory and include them in your ```<script>```, ```<link rel="stylesheet">```. For example the jQuery library, a precompiled Bootstrap CSS or its icon fonts.
 ####JS - Closure Compiler conform
 The JS sources in silksmith are JavaScript sources that will be "compiled" by the Google's Closure Compiler and come with valid [https://developers.google.com/closure/compiler/docs/js-for-compiler](JSDoc annotations) and ```goog.provide("my.Class")``` and ```goog.require("your.Class")``` calls.
 ####Externs
