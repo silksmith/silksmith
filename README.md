@@ -6,11 +6,16 @@ Compile your JS code with Google's Closure Compiler, generate CSS with SASS. Bui
 JS, SCSS and stuff
 ##Concept
 TBD
+- Package JS and SCSS
+- Compile JS (type checking)
+- Compile SSS
+- Buildin Dev/Test server
+- Nothing needed on the build server, gradle comes with everything (no node/npm/bower etc must be installed or executed in the beginning)
 ###Resource Types
 ####Statics
 Statics are resoureces that are already in there distributable form and you would usually serve them in a public directory and include them in your ```<script>```, ```<link rel="stylesheet">```. For example the jQuery library, a precompiled Bootstrap CSS or its icon fonts.
 ####JS - Closure Compiler conform
-The JS sources in silksmith are JavaScript sources that will be "compiled" by the Google's Closure Compiler and come with valid [https://developers.google.com/closure/compiler/docs/js-for-compiler](JSDoc annotations) and ```goog.provide("my.Class")``` and ```goog.require("your.Class")``` calls.
+The JS sources in silksmith are JavaScript sources that will be "compiled" by the Google's Closure Compiler and come with valid [JSDoc annotations](https://developers.google.com/closure/compiler/docs/js-for-compiler) and ```goog.provide("my.Class")``` and ```goog.require("your.Class")``` calls.
 ####Externs
 Externs are part of the part of the Closure Compiler minification process. They describe the interface how to interact with precompiled libraries. During the "compile" process the compiler will check if you call for example jQuery in the right way.
 
