@@ -47,9 +47,7 @@ In your ```index.html```
 ```
 <html>
 <head>
-
-	<link href="/your-style-sheet.css">
-	
+	<link href="/your-style-sheet.css" rel="stylesheet">
 </head>
 <body>
 	...
@@ -57,7 +55,10 @@ In your ```index.html```
 </body>
 </html>
 ```
-Serve the directory that contains the ```index.html```
+For the CSS you can refer to any of your output css, so if you have ```my-style.scss``` you can use ```my-style.css```. Currently for the JS part you need to include the ```${project.name}.js```
+
+
+Serve the directory that contains the ```index.html```. The build in server will provide all the js sources and will run sass in watch mode inside.
 ```
 server {
 	// for example if your index.html is in src/main/resources/static
@@ -84,10 +85,14 @@ Silksmith comes with a inbuild mocha test runner
 ``` gradle testJS ```
 if you want to run the tests in watch mode append ```-Pwatch```
 
+####Testing on Saucelab
+TBD
+
 ###Publishing
 Silksmith publishes .silk packages on nexus via gradles publishing extension
 
 ```
+apply plugin: 'maven-publish'
 publishing {
 	publications {
 		maven(MavenPublication) {
