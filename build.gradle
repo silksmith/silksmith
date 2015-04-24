@@ -13,11 +13,11 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 
-version = "0.3.3"
+version = "0.4.0"
 group = "io.silksmith"
 
 repositories { mavenCentral() }
-ext{ closureCompilerVersion = 'v20141215' }
+ext{ closureCompilerVersion = 'v20150315' }
 dependencies {
 	compile gradleApi()
 	compile localGroovy()
@@ -92,7 +92,7 @@ bintray {
 }
 
 pluginBundle {
-	website = 'http://silksmith.io'
+	website = 'https://github.com/silksmith/silksmith'
 	vcsUrl = 'https://github.com/silksmith/silksmith'
 	description = 'JS and CSS with Gradle'
 	tags = [
