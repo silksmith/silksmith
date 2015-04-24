@@ -17,9 +17,9 @@ Statics are resoureces that are already in there distributable form and you woul
 ####JS - Closure Compiler conform
 The JS sources in silksmith are JavaScript sources that will be "compiled" by the Google's Closure Compiler and come with valid [JSDoc annotations](https://developers.google.com/closure/compiler/docs/js-for-compiler) and ```goog.provide("my.Class")``` and ```goog.require("your.Class")``` calls.
 ####Externs
-Externs are part of the Closure Compiler minification process. They describe the interface how to interact with precompiled libraries. During the "compile" process the compiler will check if you call for example jQuery in the right way.
+[Externs](https://developers.google.com/closure/compiler/docs/api-tutorial3) are part of the Closure Compiler minification process. They describe the interface how to interact with precompiled libraries. During the "compile" process the compiler will check if you call for example jQuery in the right way.
 ####SCSS
-Silksmith also supports SASS with SCSS syntax. Packages that provide scss sources will automatically be in the SASS *include_path*
+Silksmith also supports [SASS](http://sass-lang.com/) with SCSS syntax. Packages that provide scss sources will automatically be in the SASS *include_path*
 ##Setup
 See this sample app to get started https://github.com/silksmith/sample-app
 
@@ -135,7 +135,11 @@ silksmith.source {
     }
 }
 ```
-
+####Version
+Since many packages may be 3rd party libraries but will come with externs we typically use the libraries version for the package plus an kind of build indicator to distingiuish fixes/updates on the externs e.g.:
+```
+version = "1.11.2+smith.1"version = "1.11.2+smith.3"
+```
 
 ##Extension
 ###Angular
@@ -151,6 +155,7 @@ Now you can put angular templates in ```src/main/ngTemplates``` and can annotate
 ##Links
 - Google hardcore JS "mininfier" https://developers.google.com/closure/compiler/
 - SASS/SCSS http://sass-lang.com
+- Gradle http://gradle.org
 
 ##Other plugins:
 
