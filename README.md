@@ -9,7 +9,7 @@ TBD
 - Package JS and SCSS
 - Compile JS (type checking)
 - Compile SSS
-- Buildin Dev/Test server
+- Builtin Dev/Test server
 - Nothing needed on the build server, gradle comes with everything (no node/npm/bower etc must be installed or executed in the beginning)
 
 ###Resource Types
