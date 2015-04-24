@@ -11,13 +11,14 @@ TBD
 - Compile SSS
 - Buildin Dev/Test server
 - Nothing needed on the build server, gradle comes with everything (no node/npm/bower etc must be installed or executed in the beginning)
+
 ###Resource Types
 ####Statics
 Statics are resoureces that are already in there distributable form and you would usually serve them in a public directory and include them in your ```<script>```, ```<link rel="stylesheet">```. For example the jQuery library, a precompiled Bootstrap CSS or its icon fonts.
 ####JS - Closure Compiler conform
 The JS sources in silksmith are JavaScript sources that will be "compiled" by the Google's Closure Compiler and come with valid [JSDoc annotations](https://developers.google.com/closure/compiler/docs/js-for-compiler) and ```goog.provide("my.Class")``` and ```goog.require("your.Class")``` calls.
 ####Externs
-[Externs](https://developers.google.com/closure/compiler/docs/api-tutorial3) are part of the Closure Compiler minification process. They describe the interface how to interact with precompiled libraries. During the "compile" process the compiler will check if you call for example jQuery in the right way.
+[Externs](https://developers.google.com/closure/compiler/docs/api-tutorial3) are part of the Closure Compiler minification process. They describe the interface how to interact with precompiled libraries. During the "compile" process the compiler will check if you call for example jQuery in the right way. So usually if you have a static js resource that you somehow will call from the closure js code you should provide the externs here.
 ####SCSS
 Silksmith also supports [SASS](http://sass-lang.com/) with SCSS syntax. Packages that provide scss sources will automatically be in the SASS *include_path*
 ##Setup
