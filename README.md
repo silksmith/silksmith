@@ -28,7 +28,7 @@ build.gradle
 ```
 
 plugins {
-	id "io.silksmith.plugin" version "0.3.3"
+	id "io.silksmith.plugin" version "0.4.1"
 }
 
 ```
@@ -152,7 +152,7 @@ version = "1.11.2+smith.1"version = "1.11.2+smith.3"
 build.gradle
 ```
 plugins {
-	id "io.silksmith.plugin-angular" version "0.3.3"
+	id "io.silksmith.plugin-angular" version "0.4.1"
 }
 
 ```
