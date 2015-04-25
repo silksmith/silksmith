@@ -38,7 +38,7 @@ src/main/js - Closure JS
 src/main/statics - Static Elements
 src/main/externs - Externs for static JS libraries
 ```
-If you want to package 3rd party libs like jQuery, underscore etc. don't copy them manually to the ```src/main/statics```, see this [section](#user-content-publishing-third-party-libraries)
+If you want to package 3rd party libs like jQuery, underscore etc. don't copy them manually to the ```src/main/statics```, see this [section](#publishing-third-party-libraries)
 
 ##JavaScript
 
@@ -88,7 +88,14 @@ dependencies {
 ```
 
 ###Testing
-
+Like in other builds in gradle there is also a test configuration ```testWeb``` that extends the ```web``` configuration. So if you need to include test libraries
+```
+dependencies {
+    testWeb "io.silksmith.libs:chai:1.10.0+smith.0"
+    testWeb "io.silksmith.libs:sinon:1.12.1+smith.0"
+    testWeb "io.silksmith.libs:sinon-chai:2.6.0+smith.0"
+}
+```
 Silksmith comes with a inbuild mocha test runner
 ``` gradle testJS ```
 if you want to run the tests in watch mode append ```-Pwatch```
@@ -111,7 +118,7 @@ publishing {
 }
 ```
 
-####Publishing third party libraries
+#### Publishing third party libraries
 Silksmith comes with two helper class to package existing libraries like jQuery, Bootstrap etc.
 #####DownloadFiles Task
 If the library is provided somewhere in the web to download, you can define a download task and use its output as source dir.
