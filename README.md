@@ -50,8 +50,23 @@ To compile the application specify the "entryPoint" in for the closureCompileJS 
 closureCompileJS {
 	entyPoint = "my.app.main"
 }
+```
+
+silksmith configures the closure compiler arguments already but if you like to add some more you can either add command line args or the CompilerOptions like this
 
 ```
+closureCompileJS {
+	//like the command line args
+	args "--some_param"
+	args "foo"
+	
+	//configure the CompilerOptions directly
+	options {
+		collapseObjectLiterals = true
+	}
+}
+```
+
 In your ```index.html```
 ```
 <html>
