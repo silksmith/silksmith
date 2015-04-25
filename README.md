@@ -186,7 +186,7 @@ plugins {
 }
 
 ```
-Now you can put angular templates in ```src/main/ngTemplates``` and can annotate that need injection with ```@ngInject```
+Now you can put angular templates in ```src/main/ngTemplates``` and can annotate controllers/serverice that need injection with ```@ngInject```
 
 ##Links
 - Google hardcore JS "mininfier" https://developers.google.com/closure/compiler/
