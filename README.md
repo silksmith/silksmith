@@ -37,6 +37,7 @@ plugins {
 src/main/js - Closure JS
 src/main/statics - Static Elements
 src/main/externs - Externs for static JS libraries
+src/main/scss - Sass Sources in SCSS syntax
 ```
 If you want to package 3rd party libs like jQuery, underscore etc. don't copy them manually to the ```src/main/statics```, see this [section](#publishing-third-party-libraries)
 
