@@ -32,6 +32,13 @@ plugins {
 }
 
 ```
+###Sources
+```
+src/main/js - Closure JS
+src/main/statics - Static Elements
+src/main/externs - Externs for static JS libraries
+```
+If you want to package 3rd party libs like jQuery, underscore etc. don't copy them manually to the ```src/main/statics```, see this [section](#user-content-publishing-third-party-libraries)
 
 ##JavaScript
 
@@ -146,7 +153,17 @@ Since many packages may be 3rd party libraries but will come with externs we typ
 ```
 version = "1.11.2+smith.1"version = "1.11.2+smith.3"
 ```
+####Internal structure of .silk packages
 
+```
+my-package-1.0.1+smith.0.silk/
+- js/ #Closure JS Sources
+- externs/ #Externs for Closure JS
+- scss/ #SCSS 
+- statics/ #Statics  
+silk.json #Extra stuff for later :)
+
+```
 ##Extension
 ###Angular
 build.gradle
