@@ -190,7 +190,7 @@ silksmith.source {
 }
 ```
 ####Version
-Since many packages may be 3rd party libraries but will come with externs we typically use the libraries version for the package plus an kind of build indicator to distingiuish fixes/updates on the externs e.g.:
+Since many packages may be 3rd party libraries but will come with externs we typically use the libraries version for the package plus a kind of build indicator to distingiuish fixes/updates on the externs e.g.:
 ```
 version = "1.11.2+smith.1"
 version = "1.11.2+smith.3"
