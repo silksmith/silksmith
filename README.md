@@ -88,7 +88,7 @@ dependencies {
 ```
 
 ###Testing
-Like in other builds in gradle there is also a test configuration ```testWeb``` that extends the ```web``` configuration. So if you need to include test libraries
+Like in other builds in gradle there is also a test configuration ```testWeb``` that extends the ```web``` configuration. So if you need to include test libraries like chai or sinon you can add them via the test configuration
 ```
 dependencies {
     testWeb "io.silksmith.libs:chai:1.10.0+smith.0"
@@ -96,9 +96,12 @@ dependencies {
     testWeb "io.silksmith.libs:sinon-chai:2.6.0+smith.0"
 }
 ```
-Silksmith comes with a inbuild mocha test runner
+
+Silksmith comes with a builtin mocha test runner, so you can run
 ``` gradle testJS ```
-if you want to run the tests in watch mode append ```-Pwatch```
+it will start a browser and will execute the tests. In the current version the test server uses the same port as the develop server so make sure you not running ```server``` while executing ```testIS```.
+To run the server in watch mode append ```-Pwatch```.
+
 
 ####Testing on Saucelab
 TBD
