@@ -98,6 +98,21 @@ dependencies {
 }
 ```
 
+####Testing with Mocha
+```
+goog.require("sample.App"); // require what you want to test
+
+describe("sample.App", function(){
+  describe("getName", function(){
+  
+    it("should return the name given via the constructor", function(){
+      var app = new sample.App("foo");
+      chai.expect(app.getName()).to.equal("foo"); //chai expect to assert
+    });
+    
+  });
+});
+```
 Silksmith comes with a builtin mocha test runner, so you can run
 ``` gradle testJS ```
 it will start a browser and will execute the tests. In the current version the test server uses the same port as the develop server so make sure you not running ```server``` while executing ```testIS```.
