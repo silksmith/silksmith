@@ -93,7 +93,9 @@ server {
 The main configuration is named ```web``` and for tests you can use ```testWeb```
 ```
 repositories {
-    maven { url="http://dl.bintray.com/silksmith-io/silk"} // here are some packages on bintray
+    maven { 
+    	url="http://dl.bintray.com/silksmith-io/silk" // here are some packages on bintray
+    } 
 }
 
 dependencies {
@@ -138,7 +140,7 @@ To run the server in watch mode append ```-Pwatch```.
 TBD
 
 ###Publishing
-Silksmith publishes .silk packages on nexus via gradles publishing extension
+Silksmith publishes .silk packages on nexus via gradles publishing extension. There are already some package published here https://bintray.com/silksmith-io/silk (some externs might need some more love)
 
 ```
 apply plugin: 'maven-publish'
