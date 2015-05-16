@@ -23,7 +23,7 @@ class SassPlugin implements Plugin<Project>{
 
 		project.configurations { jruby }
 
-		project.dependencies { jruby 'org.jruby:jruby-complete:1.7.16.1' }
+		project.dependencies { jruby 'org.jruby:jruby-complete:9.0.0.0.pre2' }
 
 
 
@@ -49,8 +49,6 @@ class SassPlugin implements Plugin<Project>{
 				ScssCompile compileTask = project.task(SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet,COMPILE_SCSS_BASE_NAME),type: ScssCompile){
 					jrubyConfig = project.configurations.jruby
 					gemInstallDir = installGemTask.gemInstallDir
-					println "TODO: sass input dir takes only first src dir"
-					inputDir = sourceSet.scss.srcDirs.unique().sort().first() //TODO: fix call to work with input dirs
 
 					sourceLookupService = webSourceLookupService
 					outputDir = project.file("$project.buildDir/css/$sourceSetConfigurationName")

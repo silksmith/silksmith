@@ -2,7 +2,9 @@ package io.silksmith.css.sass
 
 import io.silksmith.SourceLookupService
 import io.silksmith.development.server.css.CSSOutput
+import io.silksmith.source.ModuleWebSourceElements
 import io.silksmith.source.WebSourceElements
+import io.silksmith.source.WebSourceSet
 
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -24,26 +26,49 @@ class SassRunner implements CSSOutput {
 
 	File outputDir
 
-	File inputDir
+
 
 	File gemInstallDir
 
 	def run(SassMode mode = SassMode.update) {
 		//-I
 		def importPathsArgs = []
+
+		def inOuts = []
 		outputDir.parentFile.mkdirs()
 		importPathsArgs = configuration.incoming.resolutionResult.allComponents.collect({ ResolvedComponentResult rcr ->
 
 			sourceLookupService.get(rcr.id)
 
-		}).collect({WebSourceElements webSourceElements ->
+		}).grep({it instanceof ModuleWebSourceElements}).collect({WebSourceElements webSourceElements ->
 
 			webSourceElements.scssDirs
 
 		}).collect({Set<File> set ->
+
 			set.collect({
+				if(!it.exists()) {
+					return []
+				}
 				["-I", it.path]
 			})
+		}).grep().flatten()
+
+		inOuts = configuration.incoming.resolutionResult.allComponents.collect({ ResolvedComponentResult rcr ->
+
+			sourceLookupService.get(rcr.id)
+
+		}).grep({it instanceof WebSourceSet}).collect({WebSourceElements webSourceElements ->
+
+			webSourceElements.scssDirs
+
+		}).collect({Set<File> set ->
+
+			set.collect({
+				if(!it.exists()) {
+					return []
+				}
+				"$it.path:$outputDir" })
 		}).grep().flatten()
 
 
@@ -55,7 +80,7 @@ class SassRunner implements CSSOutput {
 		]
 		sassArgs += importPathsArgs
 
-		sassArgs << "$inputDir:$outputDir"
+		sassArgs += inOuts
 
 		ExecResult result = project.javaexec({
 			main = "org.jruby.Main"
