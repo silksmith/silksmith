@@ -28,7 +28,7 @@ build.gradle
 ```
 
 plugins {
-	id "io.silksmith.plugin" version "0.4.1"
+	id "io.silksmith.plugin" version "0.5.0"
 }
 
 ```
@@ -214,7 +214,7 @@ silk.json #Extra stuff for later :)
 build.gradle
 ```
 plugins {
-	id "io.silksmith.plugin-angular" version "0.4.1"
+	id "io.silksmith.plugin-angular" version "0.5.0"
 }
 
 ```
@@ -224,6 +224,9 @@ Now you can put angular templates in ```src/main/ngTemplates``` and can annotate
 - Google hardcore JS "mininfier" https://developers.google.com/closure/compiler/
 - SASS/SCSS http://sass-lang.com
 - Gradle http://gradle.org
+
+##Contributing
+
 
 ##Other plugins:
 
