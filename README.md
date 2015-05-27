@@ -226,6 +226,7 @@ Now you can put angular templates in ```src/main/ngTemplates``` and can annotate
 - Gradle http://gradle.org
 
 ##Contributing
+There are still not that many silk packages especially that contain a full externs coverage, it would be great if people would create more silk packages! :) 
 
 
 ##Other plugins:
