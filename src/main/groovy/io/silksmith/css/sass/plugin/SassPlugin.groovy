@@ -50,6 +50,9 @@ class SassPlugin implements Plugin<Project>{
 					jrubyConfig = project.configurations.jruby
 					gemInstallDir = installGemTask.gemInstallDir
 
+					source  sourceSet.dependencyScssPath
+					sourceSet.scss.srcDirs.each { source it }
+
 					sourceLookupService = webSourceLookupService
 					outputDir = project.file("$project.buildDir/css/$sourceSetConfigurationName")
 					configuration = config
