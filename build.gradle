@@ -1,5 +1,5 @@
 plugins {
-	id "com.jfrog.bintray" version "1.1"
+	id "com.jfrog.bintray" version "1.2"
 	id "com.jfrog.artifactory" version "3.0.1"
 	id "com.gradle.plugin-publish" version "0.9.0"
 }
@@ -13,30 +13,30 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 
-version = "0.4.1"
+version = "0.5.0"
 group = "io.silksmith"
 
 repositories { mavenCentral() }
-ext{ closureCompilerVersion = 'v20150315' }
+ext{ closureCompilerVersion = 'v20150505' }
 dependencies {
 	compile gradleApi()
 	compile localGroovy()
 
-	compile 'org.eclipse.jetty:jetty-server:9.3.0.M1'
-	compile 'org.eclipse.jgit:org.eclipse.jgit:3.5.3.201412180710-r'
+	compile 'org.eclipse.jetty:jetty-server:9.2.10.v20150310'
+	compile 'org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r'
 
 	compile "com.google.javascript:closure-compiler:$closureCompilerVersion"
 
-	compile 'org.jruby:jruby-complete:1.7.17'
-	compile 'org.webjars:mocha:2.0.1'
+	
+	compile 'org.webjars.bower:mocha:2.2.5'
 	compile 'org.seleniumhq.selenium:selenium-java:2.45.0'
 	compile 'org.seleniumhq.selenium:selenium-chrome-driver:2.45.0'
 
 	testCompile 'junit:junit:4.11'
 }
 task wrapper(type: Wrapper) {
-	gradleVersion ="2.3"
-	distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+	gradleVersion ="2.4"
+	//distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
 publishing {
 	publications {

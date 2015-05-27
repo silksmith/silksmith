@@ -38,7 +38,7 @@ class SilkArchive extends Zip {
 
 				OutputStreamWriter wtr= new OutputStreamWriter(output)
 				def manifestToJson = manifest.toJson()
-				println "manifst: $manifestToJson"
+
 				wtr<< manifestToJson
 				wtr.flush()
 			}

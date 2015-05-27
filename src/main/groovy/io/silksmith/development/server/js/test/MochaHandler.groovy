@@ -7,6 +7,11 @@ import io.silksmith.SourceLookupService
 import io.silksmith.development.server.files.FilePathBuilder
 import io.silksmith.source.WebSourceElements
 import io.silksmith.source.WebSourceSet
+
+import javax.servlet.ServletException
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+
 import org.eclipse.jetty.server.Request
 import org.eclipse.jetty.server.handler.AbstractHandler
 import org.gradle.api.Project
@@ -14,13 +19,9 @@ import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 
-import javax.servlet.ServletException
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-
 class MochaHandler extends AbstractHandler{
 
-	def mochaVersion = "2.0.1"
+	def mochaVersion = "2.2.5"
 
 	def mochaCssPath = "/META-INF/resources/webjars/mocha/${mochaVersion}/mocha.css"
 	def mochaJSPath = "/META-INF/resources/webjars/mocha/${mochaVersion}/mocha.js"
@@ -92,17 +93,17 @@ class MochaHandler extends AbstractHandler{
 
 			response.writer << template.toString()
 
-	baseRequest.handled = true
-}else if(target == "/TEST/MOCHA/mocha.css") {
+			baseRequest.handled = true
+		}else if(target == "/TEST/MOCHA/mocha.css") {
 
-	response.outputStream << getClass().getResourceAsStream(mochaCssPath)
+			response.outputStream << getClass().getResourceAsStream(mochaCssPath)
 
-	baseRequest.handled = true
-}else if(target == "/TEST/MOCHA/mocha.js") {
+			baseRequest.handled = true
+		}else if(target == "/TEST/MOCHA/mocha.js") {
 
-	response.outputStream << getClass().getResourceAsStream(mochaJSPath)
+			response.outputStream << getClass().getResourceAsStream(mochaJSPath)
 
-	baseRequest.handled = true
-}
-}
+			baseRequest.handled = true
+		}
+	}
 }

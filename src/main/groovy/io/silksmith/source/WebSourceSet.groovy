@@ -35,4 +35,7 @@ interface WebSourceSet extends Named, Configurable<WebSourceSet>,WebSourceElemen
 
 	FileCollection getDependencyStaticsPath()
 	void setDependencyStaticsPath(FileCollection staticsPath)
+
+	FileCollection getDependencyScssPath()
+	void setDependencyScssPath(FileCollection path)
 }

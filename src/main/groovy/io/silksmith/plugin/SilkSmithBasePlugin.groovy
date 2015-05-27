@@ -73,6 +73,8 @@ class SilkSmithBasePlugin implements Plugin<Project> {
 
 			sourceSet.dependencyStaticsPath = new WebDependencyFileCollection(config, sourceLookupService, SourceType.statics)
 
+			sourceSet.dependencyScssPath = new WebDependencyFileCollection(config, sourceLookupService, SourceType.scss)
+
 
 			sourceSet.runtimeJSPath = sourceSet.dependencyJSPath + sourceSet.js
 

@@ -5,15 +5,14 @@ import io.silksmith.css.sass.SassRunner
 import io.silksmith.css.sass.SassRunner.SassMode
 import io.silksmith.development.server.css.SassRunnerProvider
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
+import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 
 
-class ScssCompile extends DefaultTask implements SassRunnerProvider{
+class ScssCompile extends SourceTask implements SassRunnerProvider{
 
 	Configuration jrubyConfig
 
@@ -22,9 +21,6 @@ class ScssCompile extends DefaultTask implements SassRunnerProvider{
 	@InputDirectory
 	def gemInstallDir
 
-	@Optional
-	@InputDirectory
-	def inputDir
 
 	@OutputDirectory
 	def outputDir
@@ -39,7 +35,7 @@ class ScssCompile extends DefaultTask implements SassRunnerProvider{
 			jrubyConfig:jrubyConfig,
 			configuration:configuration,
 			outputDir:project.file(outputDir),
-			inputDir: project.file(inputDir),
+
 			gemInstallDir:project.file(gemInstallDir)
 		]
 	}()

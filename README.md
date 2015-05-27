@@ -28,10 +28,18 @@ build.gradle
 ```
 
 plugins {
-	id "io.silksmith.plugin" version "0.3.3"
+	id "io.silksmith.plugin" version "0.4.1"
 }
 
 ```
+###Sources
+```
+src/main/js - Closure JS
+src/main/statics - Static Elements
+src/main/externs - Externs for static JS libraries
+src/main/scss - Sass Sources in SCSS syntax
+```
+If you want to package 3rd party libs like jQuery, underscore etc. don't copy them manually to the ```src/main/statics```, see this [section](#publishing-third-party-libraries)
 
 ##JavaScript
 
@@ -42,8 +50,23 @@ To compile the application specify the "entryPoint" in for the closureCompileJS 
 closureCompileJS {
 	entyPoint = "my.app.main"
 }
+```
+
+silksmith configures the closure compiler arguments already but if you like to add some more you can either add command line args or the CompilerOptions like this
 
 ```
+closureCompileJS {
+	//like the command line args
+	args "--some_param"
+	args "foo"
+	
+	//configure the CompilerOptions directly
+	options {
+		collapseObjectLiterals = true
+	}
+}
+```
+
 In your ```index.html```
 ```
 <html>
@@ -70,7 +93,9 @@ server {
 The main configuration is named ```web``` and for tests you can use ```testWeb```
 ```
 repositories {
-    maven { url="http://dl.bintray.com/silksmith-io/silk"} // here are some packages on bintray
+    maven { 
+    	url="http://dl.bintray.com/silksmith-io/silk" // here are some packages on bintray
+    } 
 }
 
 dependencies {
@@ -81,16 +106,41 @@ dependencies {
 ```
 
 ###Testing
+Like in other builds in gradle there is also a test configuration ```testWeb``` that extends the ```web``` configuration. So if you need to include test libraries like chai or sinon you can add them via the test configuration
+```
+dependencies {
+    testWeb "io.silksmith.libs:chai:1.10.0+smith.0"
+    testWeb "io.silksmith.libs:sinon:1.12.1+smith.0"
+    testWeb "io.silksmith.libs:sinon-chai:2.6.0+smith.0"
+}
+```
 
-Silksmith comes with a inbuild mocha test runner
+####Testing with Mocha
+```
+goog.require("sample.App"); // require what you want to test
+
+describe("sample.App", function(){
+  describe("getName", function(){
+  
+    it("should return the name given via the constructor", function(){
+      var app = new sample.App("foo");
+      chai.expect(app.getName()).to.equal("foo"); //chai expect to assert
+    });
+    
+  });
+});
+```
+Silksmith comes with a builtin mocha test runner, so you can run
 ``` gradle testJS ```
-if you want to run the tests in watch mode append ```-Pwatch```
+it will start a browser and will execute the tests. In the current version the test server uses the same port as the develop server so make sure you not running ```server``` while executing ```testIS```.
+To run the server in watch mode append ```-Pwatch```.
+
 
 ####Testing on Saucelab
 TBD
 
 ###Publishing
-Silksmith publishes .silk packages on nexus via gradles publishing extension
+Silksmith publishes .silk packages on nexus via gradles publishing extension. There are already some package published here https://bintray.com/silksmith-io/silk (some externs might need some more love)
 
 ```
 apply plugin: 'maven-publish'
@@ -104,7 +154,7 @@ publishing {
 }
 ```
 
-####Publishing third party libraries
+#### Publishing third party libraries
 Silksmith comes with two helper class to package existing libraries like jQuery, Bootstrap etc.
 #####DownloadFiles Task
 If the library is provided somewhere in the web to download, you can define a download task and use its output as source dir.
@@ -142,21 +192,33 @@ silksmith.source {
 }
 ```
 ####Version
-Since many packages may be 3rd party libraries but will come with externs we typically use the libraries version for the package plus an kind of build indicator to distingiuish fixes/updates on the externs e.g.:
+Since many packages may be 3rd party libraries but will come with externs we typically use the libraries version for the package plus a kind of build indicator to distingiuish fixes/updates on the externs e.g.:
 ```
-version = "1.11.2+smith.1"version = "1.11.2+smith.3"
+version = "1.11.2+smith.1"
+version = "1.11.2+smith.3"
+...
 ```
+####Internal structure of .silk packages
 
+```
+my-package-1.0.1+smith.0.silk/
+- js/ #Closure JS Sources
+- externs/ #Externs for Closure JS
+- scss/ #SCSS 
+- statics/ #Statics  
+silk.json #Extra stuff for later :)
+
+```
 ##Extension
 ###Angular
 build.gradle
 ```
 plugins {
-	id "io.silksmith.plugin-angular" version "0.3.3"
+	id "io.silksmith.plugin-angular" version "0.4.1"
 }
 
 ```
-Now you can put angular templates in ```src/main/ngTemplates``` and can annotate that need injection with ```@ngInject```
+Now you can put angular templates in ```src/main/ngTemplates``` and can annotate controllers/services that need injection with ```@ngInject```
 
 ##Links
 - Google hardcore JS "mininfier" https://developers.google.com/closure/compiler/

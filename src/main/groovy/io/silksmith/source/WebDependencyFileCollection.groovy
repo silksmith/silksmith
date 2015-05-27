@@ -9,7 +9,12 @@ import org.gradle.api.file.FileCollection
 import org.gradle.api.internal.file.UnionFileCollection
 import org.gradle.api.internal.file.collections.FileCollectionAdapter
 import org.gradle.api.internal.file.collections.MinimalFileSet
-
+/**
+ * Lazy FileCollection to delay the dependency resolution
+ * 
+ * @author bruchmann
+ *
+ */
 class WebDependencyFileCollection extends FileCollectionAdapter{
 
 
