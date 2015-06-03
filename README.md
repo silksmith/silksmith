@@ -22,7 +22,7 @@ The JS sources in silksmith are JavaScript sources that will be "compiled" by th
 ####SCSS
 Silksmith also supports [SASS](http://sass-lang.com/) with SCSS syntax. Packages that provide scss sources will automatically be in the SASS *include_path*
 ##Setup
-See this sample app to get started https://github.com/silksmith/sample-app
+See this sample app to get started https://github.com/silksmith/sample-app or this todo app https://github.com/silksmith/silksmith-todo-sample
 
 build.gradle
 ```
