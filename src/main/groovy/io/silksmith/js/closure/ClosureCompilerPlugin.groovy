@@ -7,6 +7,7 @@ import io.silksmith.development.server.closure.DepsJSHandler
 import io.silksmith.development.server.js.test.MochaHandler
 import io.silksmith.development.task.WorkspaceServerTask
 import io.silksmith.js.closure.task.ClosureCompileTask
+import io.silksmith.js.closure.task.RefasterJSTask
 import io.silksmith.js.closure.task.TestJSTask
 import io.silksmith.plugin.SilkSmithBasePlugin
 import io.silksmith.plugin.SilkSmithExtension
@@ -15,6 +16,7 @@ import io.silksmith.source.WebSourceSet
 
 import javax.inject.Inject
 
+import org.apache.commons.lang3.StringUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -116,5 +118,30 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 		assembleJSTask.inputs.files mainCompileTask
 
 		assembleJSTask.outputs.dir assembleOutputDir
+
+		def refasterjsBaseDir = project.file("refasterjs")
+		if(refasterjsBaseDir.exists()) {
+			def refasterAllTask = project.task("refasterAll"){
+				
+			}
+			project.fileTree(refasterjsBaseDir).forEach {File file ->
+	
+				def refactorName = file.path - "$refasterjsBaseDir.path/" - ".js"
+				refactorName = refactorName.replace("/","_")
+				//TODO: should we include the test js sources as well?
+				def refasterTask = project.task("refaster${StringUtils.capitalize(refactorName)}", type: RefasterJSTask){
+					source  mainSourceSet.js
+					source  testWebSourceSet.js
+					
+					externs = mainSourceSet.dependencyExternsPath + testWebSourceSet.dependencyExternsPath
+					
+					dryRun = project.hasProperty('dryRun')
+					refasterJsTemplate = file
+	
+				}
+				refasterAllTask.dependsOn refasterTask
+			}
+		}
+
 	}
 }
