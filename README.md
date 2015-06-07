@@ -22,7 +22,9 @@ The JS sources in silksmith are JavaScript sources that will be "compiled" by th
 ####SCSS
 Silksmith also supports [SASS](http://sass-lang.com/) with SCSS syntax. Packages that provide scss sources will automatically be in the SASS *include_path*
 ##Setup
-See this sample app to get started https://github.com/silksmith/sample-app
+Currently silksmith needs Java 8 to run.
+
+See this sample app to get started https://github.com/silksmith/sample-app or this todo app https://github.com/silksmith/silksmith-todo-sample
 
 build.gradle
 ```
@@ -94,7 +96,9 @@ The main configuration is named ```web``` and for tests you can use ```testWeb``
 ```
 repositories {
     maven { 
-    	url="http://dl.bintray.com/silksmith-io/silk" // here are some packages on bintray
+    	jcenter() // or mavenCentral() - currently needed to run the sass part via jruby
+    	
+    	url="http://dl.bintray.com/silksmith-io/silk" // here are some silk packages on bintray
     } 
 }
 
@@ -226,6 +230,7 @@ Now you can put angular templates in ```src/main/ngTemplates``` and can annotate
 - Gradle http://gradle.org
 
 ##Contributing
+There are still not that many silk packages especially that contain a full externs coverage, it would be great if people would create more silk packages! :) 
 
 
 ##Other plugins:
