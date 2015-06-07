@@ -130,10 +130,11 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 				refactorName = refactorName.replace("/","_")
 				//TODO: should we include the test js sources as well?
 				def refasterTask = project.task("refaster${StringUtils.capitalize(refactorName)}", type: RefasterJSTask){
+					println "Test Sources currently not considered by refastering process"
 					source  mainSourceSet.js
-					source  testWebSourceSet.js
-					
-					externs = mainSourceSet.dependencyExternsPath + testWebSourceSet.dependencyExternsPath
+					//source  testWebSourceSet.js
+					externs = mainSourceSet.dependencyExternsPath
+					//externs = mainSourceSet.dependencyExternsPath + testWebSourceSet.dependencyExternsPath
 					
 					dryRun = project.hasProperty('dryRun')
 					refasterJsTemplate = file

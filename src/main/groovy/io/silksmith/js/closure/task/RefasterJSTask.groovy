@@ -39,7 +39,12 @@ class RefasterJSTask extends SourceTask {
 
 		def driverBuilder = new RefactoringDriver.Builder(scanner)
 		if(includeDefaultExterns) {
-			driverBuilder.addExterns(CommandLineRunner.getDefaultExterns() )
+			def defaultExterns = CommandLineRunner.getDefaultExterns()
+			logger.info "using JS Default Externs:"
+			defaultExterns.each {
+				logger.info "$it"
+			}
+			driverBuilder.addExterns(defaultExterns )
 		}
 
 
@@ -47,6 +52,16 @@ class RefasterJSTask extends SourceTask {
 				.addExterns(externsSourceFiles)
 				.addInputs(sourceFiles)
 				.build()
+				logger.info("JS Other Externs Files:")
+				externsSourceFiles.each {
+					logger.info "$it" 
+				}
+				logger.info("JS Source Files:")
+				externsSourceFiles.each {
+					logger.info "$it"
+				}
+
+		
 
 		println("Compiling JavaScript code and searching for suggested fixes.")
 		List<SuggestedFix> fixes = driver.drive()
