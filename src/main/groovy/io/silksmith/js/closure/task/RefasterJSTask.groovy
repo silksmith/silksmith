@@ -6,7 +6,11 @@ import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 
+import com.google.javascript.jscomp.CheckLevel;
 import com.google.javascript.jscomp.CommandLineRunner
+import com.google.javascript.jscomp.CompilerOptions;
+import com.google.javascript.jscomp.DependencyOptions;
+import com.google.javascript.jscomp.DiagnosticGroups;
 import com.google.javascript.jscomp.ErrorManager
 import com.google.javascript.jscomp.SourceFile
 import com.google.javascript.refactoring.ApplySuggestedFixes
@@ -36,14 +40,27 @@ class RefasterJSTask extends SourceTask {
 		RefasterJsScanner scanner = new RefasterJsScanner()
 		scanner.loadRefasterJsTemplate(refasterJsTemplate.path)
 
+		CompilerOptions options = new CompilerOptions([
+			dependencyOptions : new DependencyOptions([
+				dependencySorting : true
+			]),
+			ideMode : true,
+			checkSymbols: true,
+			checkTypes : true,
+			closurePass : true,
+			preserveGoogRequires : false,
+			acceptConstKeyword : true
+		]);
+		options.setWarningLevel(DiagnosticGroups.MISSING_REQUIRE, CheckLevel.ERROR);
+
+
 
 		def driverBuilder = new RefactoringDriver.Builder(scanner)
+		driverBuilder.withCompilerOptions(options)
 		if(includeDefaultExterns) {
 			def defaultExterns = CommandLineRunner.getDefaultExterns()
 			logger.info "using JS Default Externs:"
-			defaultExterns.each {
-				logger.info "$it"
-			}
+			defaultExterns.each { logger.info "$it" }
 			driverBuilder.addExterns(defaultExterns )
 		}
 
@@ -52,16 +69,12 @@ class RefasterJSTask extends SourceTask {
 				.addExterns(externsSourceFiles)
 				.addInputs(sourceFiles)
 				.build()
-				logger.info("JS Other Externs Files:")
-				externsSourceFiles.each {
-					logger.info "$it" 
-				}
-				logger.info("JS Source Files:")
-				externsSourceFiles.each {
-					logger.info "$it"
-				}
+		logger.info("JS Other Externs Files:")
+		externsSourceFiles.each { logger.info "$it"  }
+		logger.info("JS Source Files:")
+		externsSourceFiles.each { logger.info "$it" }
 
-		
+
 
 		println("Compiling JavaScript code and searching for suggested fixes.")
 		List<SuggestedFix> fixes = driver.drive()

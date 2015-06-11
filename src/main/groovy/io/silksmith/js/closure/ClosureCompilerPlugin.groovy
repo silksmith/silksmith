@@ -122,23 +122,26 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 		def refasterjsBaseDir = project.file("refasterjs")
 		if(refasterjsBaseDir.exists()) {
 			def refasterAllTask = project.task("refasterAll"){
-				
+
 			}
 			project.fileTree(refasterjsBaseDir).forEach {File file ->
-	
+
+				def excludeTests = project.hasProperty('excludeTests')
 				def refactorName = file.path - "$refasterjsBaseDir.path/" - ".js"
 				refactorName = refactorName.replace("/","_")
 				//TODO: should we include the test js sources as well?
 				def refasterTask = project.task("refaster${StringUtils.capitalize(refactorName)}", type: RefasterJSTask){
 					println "Test Sources currently not considered by refastering process"
 					source  mainSourceSet.js
-					//source  testWebSourceSet.js
-					externs = mainSourceSet.dependencyExternsPath
-					//externs = mainSourceSet.dependencyExternsPath + testWebSourceSet.dependencyExternsPath
-					
+					if(excludeTests) {
+						externs = mainSourceSet.dependencyExternsPath
+					}else {
+						externs = mainSourceSet.dependencyExternsPath + testWebSourceSet.dependencyExternsPath
+						source testWebSourceSet.js
+					}
 					dryRun = project.hasProperty('dryRun')
 					refasterJsTemplate = file
-	
+
 				}
 				refasterAllTask.dependsOn refasterTask
 			}

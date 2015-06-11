@@ -17,7 +17,7 @@ version = "0.6.0-SNAPSHOT"
 group = "io.silksmith"
 
 repositories { mavenCentral() }
-ext{ closureCompilerVersion = 'v20150505' }
+ext{ closureCompilerVersion = 'v20150609' }
 dependencies {
 	compile gradleApi()
 	compile localGroovy()
@@ -36,7 +36,7 @@ dependencies {
 }
 task wrapper(type: Wrapper) {
 	gradleVersion ="2.4"
-	//distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+    distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
 publishing {
 	publications {
