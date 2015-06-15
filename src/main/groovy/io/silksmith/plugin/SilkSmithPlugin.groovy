@@ -4,6 +4,7 @@ package io.silksmith.plugin
 import io.silksmith.ComponentUtil
 import io.silksmith.SourceLookupService
 import io.silksmith.bundling.task.SilkArchive
+import io.silksmith.css.gss.SassGssPlugin;
 import io.silksmith.css.sass.plugin.SassPlugin
 import io.silksmith.development.task.WorkspaceServerTask
 import io.silksmith.js.closure.ClosureCompilerPlugin
@@ -61,6 +62,7 @@ class SilkSmithPlugin implements Plugin<Project> {
 
 		project.apply plugin:ClosureCompilerPlugin
 		project.apply plugin:SassPlugin
+		project.apply plugin:SassGssPlugin
 	}
 
 	void configureSourceSets(Project project) {
