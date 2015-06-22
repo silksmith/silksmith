@@ -138,7 +138,12 @@ class GSSTask extends SourceTask {
 		builder.setGssFunctionMapProvider(gssFunctionMapProvider);
 
 		source.collect( { File it ->
-			new SourceCode(it.path, it.text)
+			
+			def content = it.text.replaceAll( /(\w+(-\w+)*\s*:.*\\9;)/){ line, match, g2 ->
+				return line - match
+			}
+			
+			new SourceCode(it.path,content )
 		}).each(builder.&addInput)
 
 		return builder.getJobDescription();
