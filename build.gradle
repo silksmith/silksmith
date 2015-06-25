@@ -35,7 +35,7 @@ dependencies {
 	testCompile 'junit:junit:4.11'
 }
 task wrapper(type: Wrapper) {
-	gradleVersion ="2.4"
+	gradleVersion ="2.5-rc-1"
     distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
 publishing {
