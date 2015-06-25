@@ -21,12 +21,6 @@ class SassPlugin implements Plugin<Project>{
 	@Override
 	public void apply(Project project) {
 
-		project.configurations { jruby }
-
-		project.dependencies { jruby 'org.jruby:jruby-complete:9.0.0.0.pre2' }
-
-
-
 		SilkSmithExtension ext = project.extensions.findByType(SilkSmithExtension)
 
 		def webSourceLookupService  = project.plugins.getPlugin(SilkSmithBasePlugin).sourceLookupService
@@ -41,13 +35,13 @@ class SassPlugin implements Plugin<Project>{
 
 				def installSassGemTaskName = SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet,SASS_GEMS_BASE_NAME)
 				GemInstallTask installGemTask = project.task(installSassGemTaskName, type:GemInstallTask){
-					gem "sass"
-					jrubyConfig = project.configurations.jruby
+					gem "sass","3.4.14"
+					
 					gemInstallDir = project.file("$project.projectDir/.gems/$name")
 				}
 
 				ScssCompile compileTask = project.task(SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet,COMPILE_SCSS_BASE_NAME),type: ScssCompile){
-					jrubyConfig = project.configurations.jruby
+					
 					gemInstallDir = installGemTask.gemInstallDir
 
 					source  sourceSet.dependencyScssPath

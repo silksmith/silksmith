@@ -9,10 +9,13 @@ import io.silksmith.source.WebSourceSet
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.result.ResolvedComponentResult
-import org.gradle.process.ExecResult
+import org.jruby.embed.ScriptingContainer
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class SassRunner implements CSSOutput {
 
+	private static Logger logger = LoggerFactory.getLogger(SassRunner)
 	public static enum SassMode{
 		watch, update
 	}
@@ -20,17 +23,16 @@ class SassRunner implements CSSOutput {
 
 	Project project
 
-	Configuration jrubyConfig
-
 	Configuration configuration
 
 	File outputDir
 
-
-
 	File gemInstallDir
 
 	def run(SassMode mode = SassMode.update) {
+
+
+
 		//-I
 		def importPathsArgs = []
 
@@ -73,26 +75,31 @@ class SassRunner implements CSSOutput {
 
 
 		def sassArgs = [
-			"-S",
-			"sass",
-			"--$mode",
-			"--scss",
+
+				"--$mode"
+			//"--scss",
 		]
+	
 		sassArgs += importPathsArgs
 
 		sassArgs += inOuts
 
-		ExecResult result = project.javaexec({
-			main = "org.jruby.Main"
-			classpath = jrubyConfig
 
-			args = sassArgs
-			environment 'PATH', "$gemInstallDir/bin"
-			environment 'GEM_PATH', gemInstallDir
+		def scssScript = """
+puts 'Running SCSS'
+require 'sass'
+require 'sass/exec'
+puts ARGV
+opts = Sass::Exec::SassScss.new(ARGV, :scss)
+opts.parse!"""
 
-			println "Executing ${commandLine.join(' ')}"
-		})
-		result.assertNormalExitValue()
+		ScriptingContainer container = new ScriptingContainer();
+		container.environment = ['GEM_PATH':gemInstallDir.path]
+		container.argv = sassArgs
+		def scssResult = container.runScriptlet(scssScript)
+
+		logger.info("SCSS script result: {}",scssResult)
+
 	}
 	@Override
 	public File getOutput() {

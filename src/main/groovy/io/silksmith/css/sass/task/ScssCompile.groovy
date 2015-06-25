@@ -14,7 +14,7 @@ import org.gradle.api.tasks.TaskAction
 
 class ScssCompile extends SourceTask implements SassRunnerProvider{
 
-	Configuration jrubyConfig
+	
 
 	Configuration configuration
 
@@ -32,7 +32,7 @@ class ScssCompile extends SourceTask implements SassRunnerProvider{
 		[
 			sourceLookupService:sourceLookupService,
 			project:project,
-			jrubyConfig:jrubyConfig,
+			
 			configuration:configuration,
 			outputDir:project.file(outputDir),
 
