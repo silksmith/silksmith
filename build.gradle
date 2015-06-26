@@ -16,7 +16,10 @@ targetCompatibility = 1.8
 version = "0.6.0-SNAPSHOT"
 group = "io.silksmith"
 
-repositories { mavenCentral() }
+repositories { 
+	mavenCentral()
+	mavenLocal() 
+}
 ext{ closureCompilerVersion = 'v20150609' }
 dependencies {
 	compile gradleApi()
@@ -28,7 +31,7 @@ dependencies {
 	compile "com.google.javascript:closure-compiler:$closureCompilerVersion"
 
 	
-	compile 'com.google.closure-stylesheets:closure-stylesheets:20140426'
+	compile 'com.google.closure-stylesheets:closure-stylesheets:20150625'
 	
 	compile 'org.webjars.bower:mocha:2.2.5'
 	compile 'org.seleniumhq.selenium:selenium-java:2.45.0'

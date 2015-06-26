@@ -26,6 +26,7 @@ import com.google.common.css.JobDescription.InputOrientation
 import com.google.common.css.JobDescription.OutputFormat
 import com.google.common.css.JobDescription.OutputOrientation
 import com.google.common.css.compiler.commandline.ClosureCommandLineCompiler
+import com.google.common.css.compiler.commandline.DefaultCommandLineCompiler
 import com.google.common.css.compiler.commandline.RenamingType
 import com.google.common.css.compiler.commandline.ClosureCommandLineCompiler.OutputInfo
 import com.google.common.css.compiler.commandline.DefaultCommandLineCompiler.CompilerErrorManager
@@ -72,14 +73,14 @@ class GSSTask extends SourceTask {
 	def String cssRenamingPrefix = ""
 	@Input
 	def OutputRenamingMapFormat outputRenamingMapFormat = OutputRenamingMapFormat.JSON
-	
+
 	@Input
 	def SubstitutionMapProvider substitutionMapProvider = new SubstitutionMapProvider() {
 		@Override
 		public SubstitutionMap get() {
-		  return new SplittingSubstitutionMap(new MinimalSubstitutionMap());
+			return new SplittingSubstitutionMap(new MinimalSubstitutionMap());
 		}
-	  }
+	}
 	@Input
 	def GssFunctionMapProvider gssFunctionMapProvider = new DefaultGssFunctionMapProvider()
 
@@ -97,18 +98,18 @@ class GSSTask extends SourceTask {
 		CompilerErrorManager errorManager = new CompilerErrorManager();
 
 		def jobDescription = buildJobDescription()
-		ClosureCommandLineCompiler compiler = new ClosureCommandLineCompiler(
+		DefaultCommandLineCompiler compiler = new DefaultCommandLineCompiler(
 				jobDescription, exitCodeHandler, errorManager);
 
-		
+		compiler.compile();
 		String compilerOutput = compiler.execute(renameFile);
+
 
 		if (outputFile == null) {
 			System.out.print(compilerOutput);
 		} else {
 
 			outputFile.text << compilerOutput
-			
 		}
 	}
 	private JobDescription buildJobDescription() {
@@ -138,15 +139,14 @@ class GSSTask extends SourceTask {
 		builder.setGssFunctionMapProvider(gssFunctionMapProvider);
 
 		source.collect( { File it ->
-			
+
 			def content = it.text.replaceAll( /(\w+(-\w+)*\s*:.*\\9;)/){ line, match, g2 ->
 				return line - match
 			}
-			
+
 			new SourceCode(it.path,content )
 		}).each(builder.&addInput)
 
 		return builder.getJobDescription();
 	}
-	
 }
