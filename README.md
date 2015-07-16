@@ -10,15 +10,15 @@ TBD
 - Compile JS (type checking)
 - Compile SSS
 - Builtin Dev/Test server
-- Nothing needed on the build server, gradle comes with everything (no node/npm/bower etc must be installed or executed in the beginning)
+- Nothing needed on the build server, gradle comes with everything (no node/npm/bower etc. must be installed or executed in the beginning)
 
 ###Resource Types
 ####Statics
-Statics are resoureces that are already in there distributable form and you would usually serve them in a public directory and include them in your ```<script>```, ```<link rel="stylesheet">```. For example the jQuery library, a precompiled Bootstrap CSS or its icon fonts.
+Statics are resources that are already in their distributable form and you would usually serve them in a public directory and include them in your ```<script>```, ```<link rel="stylesheet">```. For example the jQuery library, a precompiled Bootstrap CSS or its icon fonts.
 ####JS - Closure Compiler conform
-The JS sources in silksmith are JavaScript sources that will be "compiled" by the Google's Closure Compiler and come with valid [JSDoc annotations](https://developers.google.com/closure/compiler/docs/js-for-compiler) and ```goog.provide("my.Class")``` and ```goog.require("your.Class")``` calls.
+The JS sources in silksmith are JavaScript sources that will be "compiled" by Google's Closure Compiler and come with valid [JSDoc annotations](https://developers.google.com/closure/compiler/docs/js-for-compiler) and ```goog.provide("my.Class")``` and ```goog.require("your.Class")``` calls.
 ####Externs
-[Externs](https://developers.google.com/closure/compiler/docs/api-tutorial3) are part of the Closure Compiler minification process. They describe the interface how to interact with precompiled libraries. During the "compile" process the compiler will check if you call for example jQuery in the right way. So usually if you have a static js resource that you somehow will call from the closure js code you should provide the externs here.
+[Externs](https://developers.google.com/closure/compiler/docs/api-tutorial3) are part of the Closure Compiler minification process. They describe the interface how to interact with precompiled libraries. During the compile process, the compiler will check if you call for example jQuery in the correct way. So if you have a static js resource that you call from the closure js code, you should provide the externs here.
 ####SCSS
 Silksmith also supports [SASS](http://sass-lang.com/) with SCSS syntax. Packages that provide scss sources will automatically be in the SASS *include_path*
 ##Setup
@@ -41,7 +41,7 @@ src/main/statics - Static Elements
 src/main/externs - Externs for static JS libraries
 src/main/scss - Sass Sources in SCSS syntax
 ```
-If you want to package 3rd party libs like jQuery, underscore etc. don't copy them manually to the ```src/main/statics```, see this [section](#publishing-third-party-libraries)
+If you want to package 3rd party libs like jQuery, underscore etc. don't copy them manually to the ```src/main/statics```, see the [section on third-party libraries](#publishing-third-party-libraries) instead.
 
 ##JavaScript
 
@@ -81,10 +81,10 @@ In your ```index.html```
 </body>
 </html>
 ```
-For the CSS you can refer to any of your output css, so if you have ```my-style.scss``` you can use ```my-style.css```. Currently for the JS part you need to include the ```${project.name}.js```
+For the CSS you can refer to any of your output css, so ifb you have ```my-style.scss``` you can use ```my-style.css```. Currently for the JS part you need to include the ```${project.name}.js```
 
 
-Serve the directory that contains the ```index.html```. The build in server will provide all the js sources and will run sass in watch mode inside.
+Serve the directory that contains the ```index.html```. The built-in server will provide all the js sources and will run sass in watch mode inside.
 ```
 server {
 	// for example if your index.html is in src/main/resources/static
@@ -134,10 +134,8 @@ describe("sample.App", function(){
   });
 });
 ```
-Silksmith comes with a builtin mocha test runner, so you can run
-``` gradle testJS ```
-it will start a browser and will execute the tests. In the current version the test server uses the same port as the develop server so make sure you not running ```server``` while executing ```testIS```.
-To run the server in watch mode append ```-Pwatch```.
+Silksmith comes with a builtin mocha test runner, so you can run ``` gradle testJS ```, which will start a browser and run the tests. In the current version, the test server uses the same port as the develop server so make sure you are not running ```server``` while executing ```testIS```.
+To run the server in watch mode, append ```-Pwatch```.
 
 
 ####Testing on Saucelab
