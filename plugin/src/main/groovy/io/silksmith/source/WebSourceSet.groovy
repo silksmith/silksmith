@@ -8,6 +8,7 @@ import org.gradle.util.Configurable
 
 interface WebSourceSet extends Named, Configurable<WebSourceSet>,WebSourceElements {
 
+	
 	SourceDirectorySet getScss()
 	SourceDirectorySet scss(Action<SourceDirectorySet> action)
 

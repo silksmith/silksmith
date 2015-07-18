@@ -1,0 +1,14 @@
+initscript {
+	repositories {
+		jcenter()
+		mavenLocal()
+	}
+
+	dependencies {
+		classpath "io.silksmith:plugin:0.6.0-SNAPSHOT"
+	}
+}
+
+allprojects {
+	apply plugin: io.silksmith.plugin.ToolingPlugin
+}

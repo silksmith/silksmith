@@ -1,0 +1,14 @@
+dependencies {
+//	compile gradleApi()
+//	compile localGroovy()
+
+	
+	compile 'org.gradle:gradle-tooling-api:2.5'
+
+	
+}
+publishing {
+	publications {
+		maven(MavenPublication) { from components.java }
+	}
+}

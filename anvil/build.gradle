@@ -1,0 +1,47 @@
+
+
+//buildscript {
+//	ext {
+//		springBootVersion = '1.2.4.RELEASE'
+//	}
+//	repositories {
+//		mavenCentral()
+//	}
+//	dependencies {
+//		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+//		classpath("io.spring.gradle:dependency-management-plugin:0.5.1.RELEASE")
+//	}
+//}
+
+
+//apply plugin: 'spring-boot'
+//apply plugin: 'io.spring.dependency-management'
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	jcenter()
+	maven {
+		url 'http://repo.spring.io/milestone'
+	}
+}
+
+
+dependencies {
+	compile("org.springframework.boot:spring-boot-starter-groovy-templates:${springBootVersion}")
+	compile("org.springframework.boot:spring-boot-starter-thymeleaf:${springBootVersion}")
+	compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+	
+	compile("org.gradle:gradle-tooling-api:2.5")
+	compile 'org.projectlombok:lombok:1.16.4'
+	compile project(":tooling")
+	compile project(":deps-parser")
+	
+	testCompile("org.springframework.boot:spring-boot-starter-test:${springBootVersion}")
+}
+
+//configurations {
+//	all*.exclude group : 'ch.qos.logback', module :'logback-classic'
+//}
