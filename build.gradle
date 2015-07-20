@@ -17,12 +17,19 @@ version = "0.6.0-SNAPSHOT"
 group = "io.silksmith"
 
 repositories { mavenCentral() }
-ext{ closureCompilerVersion = 'v20150609' }
+ext{ 
+	closureCompilerVersion = 'v20150609'
+	jettyVersion = '9.3.1.v20150714' 
+}
 dependencies {
 	compile gradleApi()
 	compile localGroovy()
 
-	compile 'org.eclipse.jetty:jetty-server:9.2.10.v20150310'
+	compile "org.eclipse.jetty:jetty-server:$jettyVersion"
+	compile "org.eclipse.jetty:jetty-servlet:$jettyVersion"
+	compile "org.eclipse.jetty:jetty-proxy:$jettyVersion"
+	
+	
 	compile 'org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r'
 	compile 'org.jruby:jruby:9.0.0.0.pre2'
 	compile "com.google.javascript:closure-compiler:$closureCompilerVersion"
