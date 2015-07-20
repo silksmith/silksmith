@@ -91,6 +91,14 @@ server {
 	dir file("src/main/resources/static") 
 }
 ```
+
+In case you have a existing server running where you server files and or maybe a some REST endpoint the development server can proxy it
+
+```
+server {
+	proxy "http://localhost:8080"  
+}
+``` 
 ###Dependencies
 The main configuration is named ```web``` and for tests you can use ```testWeb```
 ```
