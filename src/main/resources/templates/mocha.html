@@ -8,12 +8,16 @@
         CLOSURE_BASE_PATH = "/";
     </script>
     <!-- Statics -->
+    <% staticsCSSPaths.each{%>
+    <link href="$it" rel="stylesheet"></link>
+    <%} %>
     <% staticsJSPaths.each{%>
     <script src="$it"></script>
     <%} %>
+    
 
-    <link rel="stylesheet" href="/TEST/MOCHA/mocha.css"/>
-    <script src="/TEST/MOCHA/mocha.js"></script>
+
+    
     <script>mocha.setup('bdd')</script>
 
     <script>

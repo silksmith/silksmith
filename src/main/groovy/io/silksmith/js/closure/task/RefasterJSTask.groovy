@@ -2,6 +2,7 @@ package io.silksmith.js.closure.task
 
 import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
@@ -30,13 +31,16 @@ class RefasterJSTask extends SourceTask {
 	def boolean verbose = true
 	@InputFiles
 	def FileCollection externs
+	
+	@InputFile
+	def File baseJS
 
 	@TaskAction
 	def refactor() {
 
 		def externsSourceFiles = externs.collect { SourceFile.fromFile(it) }
 		def sourceFiles = source.collect { SourceFile.fromFile(it) }
-
+		sourceFiles <<  SourceFile.fromFile(baseJS)
 		RefasterJsScanner scanner = new RefasterJsScanner()
 		scanner.loadRefasterJsTemplate(refasterJsTemplate.path)
 
@@ -48,7 +52,7 @@ class RefasterJSTask extends SourceTask {
 			checkSymbols: true,
 			checkTypes : true,
 			closurePass : true,
-			preserveGoogRequires : false,
+			preserveGoogRequires : true,
 			acceptConstKeyword : true
 		]);
 		options.setWarningLevel(DiagnosticGroups.MISSING_REQUIRE, CheckLevel.ERROR);

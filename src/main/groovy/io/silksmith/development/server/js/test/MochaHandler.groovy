@@ -21,10 +21,7 @@ import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 
 class MochaHandler extends AbstractHandler{
 
-	def mochaVersion = "2.2.5"
-
-	def mochaCssPath = "/META-INF/resources/webjars/mocha/${mochaVersion}/mocha.css"
-	def mochaJSPath = "/META-INF/resources/webjars/mocha/${mochaVersion}/mocha.js"
+	
 	def mochaTemplatePath = "/templates/mocha.html"
 
 	Project project
@@ -35,18 +32,18 @@ class MochaHandler extends AbstractHandler{
 	def globals = []
 
 
-	private staticsPaths(FilePathBuilder filePathBuilder, ModuleComponentIdentifier mCID, WebSourceElements wse) {
+	private staticsPaths(FilePathBuilder filePathBuilder, ModuleComponentIdentifier mCID, WebSourceElements wse, String ext = ".js") {
 		//TODO: usage descriptor
-		return wse.statics.grep({it.path.endsWith(".js")}).collect({File f ->
+		return wse.statics.grep({it.path.endsWith(ext)}).collect({File f ->
 			filePathBuilder.staticsPathFor(mCID, f)
 		})
 
 	}
-	private staticsPaths(FilePathBuilder filePathBuilder, ProjectComponentIdentifier pCID, WebSourceSet wse) {
+	private staticsPaths(FilePathBuilder filePathBuilder, ProjectComponentIdentifier pCID, WebSourceSet wse, String ext=".js") {
 		def staticsJSPaths = []
 		wse.staticsDirs.unique().sort().eachWithIndex { File srcDir,int index ->
 			staticsJSPaths += project.fileTree(srcDir).collect({ File f ->
-				if(wse.statics.contains(f) && f.path.endsWith(".js") ){
+				if(wse.statics.contains(f) && f.path.endsWith(ext) ){
 					return filePathBuilder.staticsPathFor(pCID, wse, srcDir, index, f)
 				}
 			}).grep()
@@ -75,6 +72,14 @@ class MochaHandler extends AbstractHandler{
 
 				staticsPaths(filePathBuilder, cId, wse)
 			}.flatten()
+			
+			def staticsCSSPaths  = components.collect { ComponentIdentifier cId ->
+				
+								//todo: move insde staticsPaths method
+								def wse = sourceLookupService.get(cId)
+				
+								staticsPaths(filePathBuilder, cId, wse, ".css")
+							}.flatten()
 
 			def paths = []
 			testSourceSet.js.srcDirs.unique().sort().eachWithIndex { File srcDir,int index ->
@@ -89,19 +94,9 @@ class MochaHandler extends AbstractHandler{
 			response.contentType = 'text/html'
 
 			def engine = new SimpleTemplateEngine()
-			def template = engine.createTemplate(getClass().getResource(mochaTemplatePath)).make(["staticsJSPaths": staticsJSPaths, "paths": paths, "globalsJSON": globalsJSON])
+			def template = engine.createTemplate(getClass().getResource(mochaTemplatePath)).make(["staticsJSPaths": staticsJSPaths, "staticsCSSPaths" : staticsCSSPaths, "paths": paths, "globalsJSON": globalsJSON])
 
 			response.writer << template.toString()
-
-			baseRequest.handled = true
-		}else if(target == "/TEST/MOCHA/mocha.css") {
-
-			response.outputStream << getClass().getResourceAsStream(mochaCssPath)
-
-			baseRequest.handled = true
-		}else if(target == "/TEST/MOCHA/mocha.js") {
-
-			response.outputStream << getClass().getResourceAsStream(mochaJSPath)
 
 			baseRequest.handled = true
 		}

@@ -31,11 +31,9 @@ dependencies {
 	
 	
 	compile 'org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r'
-	compile 'org.jruby:jruby:9.0.0.0.pre2'
+	compile 'org.jruby:jruby:9.0.0.0'
 	compile "com.google.javascript:closure-compiler:$closureCompilerVersion"
 
-	
-	compile 'org.webjars.bower:mocha:2.2.5'
 	compile 'org.seleniumhq.selenium:selenium-java:2.45.0'
 	compile 'org.seleniumhq.selenium:selenium-chrome-driver:2.45.0'
 

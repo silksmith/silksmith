@@ -1,6 +1,8 @@
 package io.silksmith.js.closure
 
 import io.silksmith.ComponentUtil
+import io.silksmith.SilkModuleCacheUtil
+import io.silksmith.bundling.task.SilkArchive;
 import io.silksmith.development.ide.idea.libraries.IdeaJSLibrariesTask
 import io.silksmith.development.server.closure.ClosureJSDevelopmentHandler
 import io.silksmith.development.server.closure.DepsJSHandler
@@ -20,6 +22,7 @@ import org.apache.commons.lang3.StringUtils
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.internal.file.FileResolver
@@ -120,6 +123,8 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 		assembleJSTask.outputs.dir assembleOutputDir
 
 		def refasterjsBaseDir = project.file("refasterjs")
+
+
 		if(refasterjsBaseDir.exists()) {
 			def refasterAllTask = project.task("refasterAll"){
 
@@ -131,16 +136,32 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 				refactorName = refactorName.replace("/","_")
 				//TODO: should we include the test js sources as well?
 				def refasterTask = project.task("refaster${StringUtils.capitalize(refactorName)}", type: RefasterJSTask){
-					println "Test Sources currently not considered by refastering process"
+
+
 					source  mainSourceSet.js
 					if(excludeTests) {
-						externs = mainSourceSet.dependencyExternsPath
+						externs = mainSourceSet.dependencyExternsPath + mainSourceSet.externs.asFileTree
 					}else {
-						externs = mainSourceSet.dependencyExternsPath + testWebSourceSet.dependencyExternsPath
+						externs = mainSourceSet.dependencyExternsPath + testWebSourceSet.dependencyExternsPath + mainSourceSet.externs.asFileTree
 						source testWebSourceSet.js
 					}
+					
 					dryRun = project.hasProperty('dryRun')
 					refasterJsTemplate = file
+
+					project.afterEvaluate({
+						Dependency closureBaseDep = mainConfig.dependencies.find( { it.name == 'closure-base'})
+						def closureBaseJSFile = project.fileTree(SilkModuleCacheUtil.pathInCache(closureBaseDep.group, closureBaseDep.name, closureBaseDep.version,SilkArchive.STATICS_DIR)).singleFile
+
+						baseJS = closureBaseJSFile
+						
+						externs.each {
+							println it
+						}
+					})
+
+
+
 
 				}
 				refasterAllTask.dependsOn refasterTask

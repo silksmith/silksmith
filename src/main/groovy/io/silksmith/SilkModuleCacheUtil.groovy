@@ -25,6 +25,9 @@ class SilkModuleCacheUtil {
 	static def pathInCache( group, name, version) {
 		"${getBaseLocation()}/$group/$name/$version"
 	}
+	static def pathInCache( group, name, version, type) {
+		"${pathInCache(group, name, version)}/$type"
+	}
 
 	static def externsPathInCache(ModuleComponentIdentifier id) {
 		"${pathInCache(id)}/$SilkArchive.EXTERNS_DIR"

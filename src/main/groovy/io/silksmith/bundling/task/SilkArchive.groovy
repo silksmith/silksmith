@@ -66,6 +66,21 @@ class SilkArchive extends Zip {
 	public void scss(Closure c) {
 		into(SCSS_DIR,c)
 	}
+	public void jsLicense(Closure c){
+		license(JS_DIR,c)
+	}
+	public void scssLicense(Closure c){
+		license(SCSS_DIR,c)
+	}
+	public void staticsLicense(Closure c){
+		license(STATICS_DIR,c)
+	}
+	public void externsLicense(Closure c){
+		license(EXTERNS_DIR,c)
+	}
+	public void license(type,Closure c){
+		into("license/$type")
+	}
 	public SilkArchive manifest(Closure<?> configureClosure) {
 		if (getManifest() == null) {
 			manifest = new SilkManifest(project.container(StaticsUsageDescriptor))
