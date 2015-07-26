@@ -24,5 +24,5 @@ after_success:
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && ./gradlew
   bintrayUpload -Pbintray_net_user="${bintray_net_user}" -Pbintray_net_key="${bintray_net_key}" && ./gradlew publishPlugins -Dgradle.publish.key=${gradle_publish_key} -Dgradle.publish.secret=${gradle_publish_secret}
 - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "develop" && ./gradlew
-  publishMavenPublicationToJcenterSnapshotRepository -Pbintray_net_user="${bintray_net_user}"
+  plugin:publishMavenPublicationToJcenterSnapshotRepository -Pbintray_net_user="${bintray_net_user}"
   -Pbintray_net_key="${bintray_net_key}"
