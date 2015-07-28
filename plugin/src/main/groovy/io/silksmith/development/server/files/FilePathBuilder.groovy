@@ -6,6 +6,8 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 
+import io.silksmith.SilkModuleCacheUtil;
+import io.silksmith.bundling.task.SilkArchive;
 import io.silksmith.source.WebSourceSet
 
 

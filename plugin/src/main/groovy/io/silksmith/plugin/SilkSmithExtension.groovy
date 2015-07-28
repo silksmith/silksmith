@@ -4,9 +4,11 @@ package io.silksmith.plugin
 import org.gradle.api.Project
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.internal.reflect.Instantiator
+import org.gradle.util.ConfigureUtil;
 
 import groovy.lang.Closure
 import io.silksmith.source.WebSourceSetContainer
+import io.silksmith.source.internal.DefaultWebSourceSetContainer;
 
 class SilkSmithExtension {
 

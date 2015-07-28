@@ -9,6 +9,5 @@ import org.gradle.util.Configurable
 
 interface AngularSourceSet extends Named, Configurable<AngularSourceSet>{
 
-
 	SourceDirectorySet getTemplates()
 }

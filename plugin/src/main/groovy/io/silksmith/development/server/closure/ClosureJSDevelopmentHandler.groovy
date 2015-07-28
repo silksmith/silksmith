@@ -18,7 +18,6 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.component.ComponentIdentifier
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
-import org.slf4j.LoggerFactory
 /**
  * Mimics the /my.app.js request
  * @author bruchmann
@@ -36,13 +35,14 @@ document.write('<script>goog.require("$entryPoint")</script>');
 	def basePathJS =""
 	ClosureJSOutput jsOutput
 
-
-	def logger = LoggerFactory.getLogger(ClosureJSDevelopmentHandler)
-
-
 	Configuration configuration
 
 	Project project
+	
+	@Lazy
+	def handlerPath = {
+		"$basePathJS/$jsOutput.dest.name"
+	}()
 
 	SourceLookupService sourceLookupService
 
@@ -54,7 +54,7 @@ document.write('<script>goog.require("$entryPoint")</script>');
 	public void handle(String target, Request baseRequest,
 			HttpServletRequest request, HttpServletResponse response)
 	throws IOException, ServletException {
-		if(target == "$basePathJS/$jsOutput.dest.name") {
+		if(target == handlerPath) {
 
 			def writeDocumentWritePath = {String path ->
 				if(path.endsWith(".js") ) {

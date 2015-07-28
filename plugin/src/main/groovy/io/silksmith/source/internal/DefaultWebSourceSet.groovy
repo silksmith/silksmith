@@ -3,13 +3,17 @@ package io.silksmith.source.internal
 import java.io.File
 import java.util.Set
 
+import org.apache.commons.lang3.StringUtils;
 import org.gradle.api.Action
 import org.gradle.api.Project
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.internal.file.DefaultSourceDirectorySet
 import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.internal.reflect.Instantiator
+import org.gradle.util.ConfigureUtil;
+import org.gradle.util.GUtil;
 
 import groovy.lang.Closure
 import io.silksmith.source.WebSourceSet

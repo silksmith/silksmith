@@ -7,6 +7,8 @@ import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.file.FileCollection
 import org.gradle.api.internal.file.FileResolver
 
+import io.silksmith.SilkModuleCacheUtil;
+
 
 class ModuleWebSourceElements implements WebSourceElements{
 

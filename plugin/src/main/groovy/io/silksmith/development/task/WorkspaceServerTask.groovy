@@ -42,7 +42,11 @@ class WorkspaceServerTask extends DefaultTask{
 		println "init proxyHandler"
 		ServletContextHandler contextHandler = new ServletContextHandler();
 		
-		server.handler contextHandler
+		server.handlerList {
+			println "In closure $this"
+			
+			 addHandler(contextHandler)
+		}
 		contextHandler
 	}()
 	@Lazy

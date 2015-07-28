@@ -4,6 +4,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.component.ProjectComponentIdentifier
 import org.gradle.api.internal.file.FileResolver
+import org.gradle.api.tasks.SourceSet;
 
 import io.silksmith.plugin.SilkSmithExtension
 import io.silksmith.source.ModuleWebSourceElements;
