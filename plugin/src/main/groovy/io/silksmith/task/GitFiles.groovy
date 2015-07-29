@@ -24,7 +24,8 @@ class GitFiles extends DefaultTask{
 			git = Git.cloneRepository().setDirectory(workingCopyDir).setURI(url).call()
 		}
 
-		git.fetch().setTagOpt(TagOpt.FETCH_TAGS) .call()
+		git.fetch().setTagOpt(TagOpt.FETCH_TAGS).call()
 		git.checkout().setName(checkout).call()
+		
 	}
 }

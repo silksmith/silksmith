@@ -6,7 +6,8 @@ import org.gradle.api.tasks.bundling.Zip
 import org.gradle.util.ConfigureUtil;
 
 import groovy.lang.Closure
-import io.silksmith.Constants;
+import io.silksmith.Constants
+import io.silksmith.bundling.MetaInfo;
 import io.silksmith.bundling.SilkManifest
 import io.silksmith.bundling.StaticDescriptor;
 import io.silksmith.bundling.StaticsUsageDescriptor;
@@ -28,8 +29,9 @@ class SilkArchive extends Zip {
 
 	SilkArchive() {
 		extension = DEFAULT_EXTENSION
-		manifest = new SilkManifest(project.container(StaticsUsageDescriptor), project.container(StaticDescriptor))
+		manifest = new SilkManifest(project.container(StaticsUsageDescriptor), project.container(StaticDescriptor), project.container(MetaInfo))
 
+		
 
 		rootSpec.from({
 			MapFileTree manifestSource = new MapFileTree(temporaryDirFactory, fileSystem)
@@ -78,7 +80,7 @@ class SilkArchive extends Zip {
 		license(EXTERNS_DIR,c)
 	}
 	public void license(type,Closure c){
-		into("license/$type")
+		into("license/$type",c)
 	}
 	public SilkArchive manifest(Closure<?> configureClosure) {
 		if (getManifest() == null) {
