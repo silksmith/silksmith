@@ -1,0 +1,160 @@
+<html>
+<head>
+    <title>Mocha</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+        CLOSURE_BASE_PATH = "/";
+    </script>
+    <!-- Statics -->
+    <% staticsCSSPaths.each{%>
+    <link href="$it" rel="stylesheet"></link>
+    <%} %>
+    <% staticsJSPaths.each{%>
+    <script src="$it"></script>
+    <%} %>
+    
+
+
+    
+    <script>mocha.setup('bdd')</script>
+
+    <script>
+
+        window.silksmith = (function () {
+
+            // from https://github.com/mochajs/mocha/blob/master/lib/reporters/base.js
+            // and https://github.com/mochajs/mocha/blob/master/lib/reporters/json.js
+            function SilkSmithReporter() {
+                this.stats = {suites: 0, tests: 0, passes: 0, pending: 0, failures: 0};
+                this.failures = [];
+                this.tests = [];
+                this.pending = [];
+                this.passes = [];
+
+                this.results = {
+                    complete: false,
+                    stats: this.stats,
+                    tests: [],
+                    pending: [],
+                    failures: [],
+                    passes: []
+                };
+            }
+
+            SilkSmithReporter.prototype.report = function (runner) {
+                var self = this;
+                var stats = this.stats;
+                var failures = this.failures;
+                var tests = this.tests;
+                var pending = this.pending;
+                var passes = this.passes;
+
+
+                if (!runner) return;
+                this.runner = runner;
+
+                runner.on('start', function () {
+                    stats.start = new Date;
+                });
+
+                runner.on('suite', function (suite) {
+                    stats.suites = stats.suites || 0;
+                    suite.root || stats.suites++;
+                });
+
+                runner.on('test end', function (test) {
+                    stats.tests = stats.tests || 0;
+                    stats.tests++;
+                    tests.push(test);
+                });
+
+                runner.on('pass', function (test) {
+                    stats.passes = stats.passes || 0;
+
+                    var medium = test.slow() / 2;
+                    test.speed = test.duration > test.slow()
+                            ? 'slow'
+                            : test.duration > medium
+                            ? 'medium'
+                            : 'fast';
+
+                    stats.passes++;
+
+                    passes.push(test);
+                });
+
+                runner.on('fail', function (test, err) {
+                    stats.failures = stats.failures || 0;
+                    stats.failures++;
+                    failures.push(test);
+                });
+
+                runner.on('end', function () {
+                    stats.end = new Date;
+                    stats.duration = new Date - stats.start;
+
+                    self.results.complete = true;
+                    self.results.tests = tests.map(clean);
+                    self.results.pending = pending.map(clean);
+                    self.results.failures = failures.map(clean);
+                    self.results.passes = passes.map(clean);
+                });
+
+                runner.on('pending', function () {
+                    stats.pending++;
+                    pending.push(test);
+                });
+            };
+
+            /**
+             * Return a plain-object representation of `test`
+             * free of cyclic properties etc.
+             *
+             * @param {Object} test
+             * @return {Object}
+             * @api private
+             */
+
+            function clean(test) {
+                return {
+                    title: test.title,
+                    fullTitle: test.fullTitle(),
+                    duration: test.duration,
+                    err: errorJSON(test.err || {})
+                }
+            }
+
+            /**
+             * Transform `error` into a JSON object.
+             * @param {Error} err
+             * @return {Object}
+             */
+
+            function errorJSON(err) {
+                var res = {};
+                Object.getOwnPropertyNames(err).forEach(function (key) {
+                    res[key] = err[key];
+                }, err);
+                return res;
+            }
+
+            return new SilkSmithReporter();
+        }());
+
+        onload = function () {
+            mocha.checkLeaks();
+            mocha.globals($globalsJSON);
+            window.silksmith.report(mocha.run());
+        };
+    </script>
+
+    <% paths.each{%>
+    <script src="$it"></script>
+    <%} %>
+</head>
+<body>
+<div id="mocha"></div>
+</body>
+</html>

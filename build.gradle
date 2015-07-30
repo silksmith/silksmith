@@ -1,121 +1,28 @@
-plugins {
-	id "com.jfrog.bintray" version "1.2"
-	id "com.jfrog.artifactory" version "3.0.1"
-	id "com.gradle.plugin-publish" version "0.9.0"
+
+
+ext{
+	closureCompilerVersion = 'v20150609'
+	jettyVersion = '9.3.1.v20150714'
 }
-apply plugin: 'groovy'
-apply plugin: 'eclipse'
-apply plugin: 'maven'
-apply plugin: 'idea'
-apply plugin: 'java'
-apply plugin: 'maven-publish'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+subprojects {
+	repositories { mavenCentral() }
 
 
-version = "0.5.0"
-group = "io.silksmith"
+	apply plugin: 'groovy'
+	apply plugin: 'eclipse'
+	apply plugin: 'maven'
+	apply plugin: 'idea'
+	apply plugin: 'java'
+	apply plugin: 'maven-publish'
 
-repositories { mavenCentral() }
-ext{ closureCompilerVersion = 'v20150505' }
-dependencies {
-	compile gradleApi()
-	compile localGroovy()
-
-	compile 'org.eclipse.jetty:jetty-server:9.2.10.v20150310'
-	compile 'org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r'
-
-	compile "com.google.javascript:closure-compiler:$closureCompilerVersion"
-
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
 	
-	compile 'org.webjars.bower:mocha:2.2.5'
-	compile 'org.seleniumhq.selenium:selenium-java:2.45.0'
-	compile 'org.seleniumhq.selenium:selenium-chrome-driver:2.45.0'
-
-	testCompile 'junit:junit:4.11'
+	version = "0.6.0"
+	group = "io.silksmith"
 }
+
 task wrapper(type: Wrapper) {
-	gradleVersion ="2.4"
-	//distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
-}
-publishing {
-	publications {
-		maven(MavenPublication) { from components.java }
-	}
-	repositories {
-		maven {
-			name 'jcenterSnapshot'
-			// change to point to your repo, e.g. http://my.org/repo
-			url "http://oss.jfrog.org/artifactory/oss-snapshot-local"
-
-			credentials {
-
-				username = bintray_net_user
-				password = bintray_net_key
-			}
-		}
-	}
-}
-artifactory {
-	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
-	publish {
-		repository {
-			repoKey = 'oss-snapshot-local'
-			username = "${artifactory_user}"
-			password = "${artifactory_password}"
-			maven = true
-
-		}
-		defaults { //This closure defines defaults for all 'artifactoryPublish' tasks of all projects the plugin is applied to
-			publications ('maven') }
-	}
-}
-
-bintray {
-
-	user = bintray_net_user
-	key = bintray_net_key
-
-
-	publications = ["maven"]
-	pkg {
-		repo = 'maven'
-		userOrg = "silksmith-io"
-		name = "silksmith"
-		websiteUrl = 'https://github.com/silksmith/silksmith'
-		issueTrackerUrl = 'https://github.com/silksmith/silksmith/issues'
-		vcsUrl = 'https://github.com/silksmith/silksmith.git'
-		licenses = ['MIT']
-		publicDownloadNumbers = true
-		//version.attributes = [ 'gradle-plugin': 'io.silksmith:silksmith:silksmith' ]
-	}
-}
-
-pluginBundle {
-	website = 'https://github.com/silksmith/silksmith'
-	vcsUrl = 'https://github.com/silksmith/silksmith'
-	description = 'JS and CSS with Gradle'
-	tags = [
-		'js',
-		'closure compiler',
-		'javascript',
-		'scss',
-		'css',
-		'dependency resolution'
-	]
-
-	plugins {
-		silksmithPlugin {
-			id = 'io.silksmith.plugin'
-			displayName = 'JS and SASS compiling'
-		}
-		silksmithAngularPlugin {
-			id = 'io.silksmith.plugin-angular'
-			displayName = 'Angular Support for Silksmith'
-		}
-		/*silksmithBasePlugin {
-		 id = 'io.silksmith.base-plugin'
-		 displayName = 'All plugins'
-		 }*/
-	}
+	gradleVersion ="2.5"
+	distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }

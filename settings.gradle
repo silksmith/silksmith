@@ -17,3 +17,6 @@ include 'services:webservice'
 */
 
 rootProject.name = 'silksmith'
+
+include 'plugin'
+include 'extra-angular'
