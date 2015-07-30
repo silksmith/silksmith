@@ -10,6 +10,8 @@ Compile your JS code with Google's Closure Compiler, generate CSS with SASS. Bui
 - Build-in Dev/Test server
 - Nothing needed on the build server, Gradle comes with everything (no node/npm/bower etc. must be installed or executed in the beginning)
 
+Checkout the [WIKI](https://github.com/silksmith/silksmith/wiki) for further details
+
 ##Links
 - Google hardcore JS "mininfier" https://developers.google.com/closure/compiler/
 - SASS/SCSS http://sass-lang.com
