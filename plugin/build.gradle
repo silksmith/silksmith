@@ -1,7 +1,7 @@
 plugins {
 	id "com.jfrog.bintray" version "1.2"
-	id "com.jfrog.artifactory" version "3.0.1"
-	id "com.gradle.plugin-publish" version "0.9.0"
+	//id "com.jfrog.artifactory" version "3.1.1"
+	id "com.gradle.plugin-publish" version "0.9.1"
 }
 
 ext{
@@ -46,6 +46,7 @@ publishing {
 		}
 	}
 }
+/*
 artifactory {
 	contextUrl = "${artifactory_contextUrl}"   //The base Artifactory URL if not overridden by the publisher/resolver
 	publish {
@@ -60,7 +61,7 @@ artifactory {
 			publications ('maven') }
 	}
 }
-
+*/
 bintray {
 
 	user = bintray_net_user
