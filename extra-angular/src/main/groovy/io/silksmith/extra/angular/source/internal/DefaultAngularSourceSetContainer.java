@@ -1,11 +1,13 @@
 package io.silksmith.extra.angular.source.internal;
 
-import io.silksmith.extra.angular.source.AngularSourceSet;
-import io.silksmith.extra.angular.source.AngularSourceSetContainer;
 import org.gradle.api.Project;
 import org.gradle.api.internal.AbstractNamedDomainObjectContainer;
 import org.gradle.api.internal.file.FileResolver;
 import org.gradle.internal.reflect.Instantiator;
+
+import io.silksmith.extra.angular.source.AngularSourceSet;
+import io.silksmith.extra.angular.source.AngularSourceSetContainer;
+
 
 public class DefaultAngularSourceSetContainer extends
 		AbstractNamedDomainObjectContainer<AngularSourceSet> implements
