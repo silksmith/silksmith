@@ -1,9 +1,10 @@
 
 
 ext{
-	closureCompilerVersion = 'v20150609'
-	jettyVersion = '9.3.1.v20150714'
+	closureCompilerVersion = 'v20151216'
+	jettyVersion = '9.3.7.v20160115'
 }
+
 subprojects {
 	repositories { mavenCentral() }
 
@@ -24,6 +25,6 @@ subprojects {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion ="2.5"
+	gradleVersion ="2.10"
 	distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }

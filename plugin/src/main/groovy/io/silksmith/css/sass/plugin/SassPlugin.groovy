@@ -35,7 +35,7 @@ class SassPlugin implements Plugin<Project>{
 
 				def installSassGemTaskName = SilkSmithBasePlugin.getSourceSetNamedTask(sourceSet,SASS_GEMS_BASE_NAME)
 				GemInstallTask installGemTask = project.task(installSassGemTaskName, type:GemInstallTask){
-					gem "sass","3.4.14"
+					gem "sass","3.4.21"
 					
 					gemInstallDir = project.file("$project.projectDir/.gems/$name")
 				}

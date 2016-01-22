@@ -109,10 +109,6 @@ class ClosureCompileTask extends SourceTask implements ClosureJSOutput{
 		]
 		closureArgs += [
 			"--jscomp_warning",
-			"checkStructDictInheritance"
-		]
-		closureArgs += [
-			"--jscomp_warning",
 			"checkTypes"
 		]
 		closureArgs += [

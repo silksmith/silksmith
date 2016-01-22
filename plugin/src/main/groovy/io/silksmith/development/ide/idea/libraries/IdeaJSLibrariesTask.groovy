@@ -6,7 +6,8 @@ import org.gradle.api.artifacts.component.ModuleComponentIdentifier
 import org.gradle.api.artifacts.result.ResolvedComponentResult;
 import org.gradle.api.tasks.TaskAction
 
-import groovy.xml.MarkupBuilder;
+import groovy.xml.MarkupBuilder
+import io.silksmith.SilkModuleCacheUtil;;
 
 class IdeaJSLibrariesTask extends DefaultTask{
 
