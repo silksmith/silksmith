@@ -25,6 +25,8 @@ class GemInstallTask extends DefaultTask {
 
 	@TaskAction
 	def install() {
+		
+		println "installing gems into $gemInstallDir.path"
 		ScriptingContainer container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.PERSISTENT);
 		container.environment = ['GEM_PATH':gemInstallDir.path]
 		//container.argv = sassArgs
