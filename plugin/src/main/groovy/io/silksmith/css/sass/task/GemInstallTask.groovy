@@ -28,13 +28,15 @@ class GemInstallTask extends DefaultTask {
 		
 		println "installing gems into $gemInstallDir.path"
 		ScriptingContainer container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.PERSISTENT);
-		container.environment = ['GEM_PATH':gemInstallDir.path, 'GEM_HOME':gemInstallDir.path]
+		
+		def relativeInstallPath = project.relativePath(gemInstallDir)
+		container.environment = ['GEM_PATH':relativeInstallPath, 'GEM_HOME':relativeInstallPath]
 		//container.argv = sassArgs
 		
 		def installScript = """
 require 'rubygems' 
 require 'rubygems/dependency_installer.rb' 
-inst = Gem::DependencyInstaller.new :install_dir => "$gemInstallDir" 
+inst = Gem::DependencyInstaller.new :install_dir => "$relativeInstallPath" 
 """
 
 		gemInstallDir.mkdirs()
