@@ -151,13 +151,10 @@ class ClosureCompilerPlugin implements Plugin<Project>{
 
 					project.afterEvaluate({
 						Dependency closureBaseDep = mainConfig.dependencies.find( { it.name == 'closure-base'})
-						def closureBaseJSFile = project.fileTree(SilkModuleCacheUtil.pathInCache(closureBaseDep.group, closureBaseDep.name, closureBaseDep.version,SilkArchive.STATICS_DIR)).singleFile
-
-						baseJS = closureBaseJSFile
 						
-						externs.each {
-							println it
-						}
+
+						baseJS = project.fileTree(SilkModuleCacheUtil.pathInCache(closureBaseDep.group, closureBaseDep.name, closureBaseDep.version,SilkArchive.STATICS_DIR))
+						
 					})
 
 

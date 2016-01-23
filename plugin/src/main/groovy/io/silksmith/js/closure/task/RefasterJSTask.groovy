@@ -32,15 +32,19 @@ class RefasterJSTask extends SourceTask {
 	@InputFiles
 	def FileCollection externs
 	
-	@InputFile
-	def File baseJS
+	@InputFiles
+	def FileCollection baseJS
 
 	@TaskAction
 	def refactor() {
 
 		def externsSourceFiles = externs.collect { SourceFile.fromFile(it) }
 		def sourceFiles = source.collect { SourceFile.fromFile(it) }
-		sourceFiles <<  SourceFile.fromFile(baseJS)
+		
+		baseJS.each {
+			sourceFiles <<  SourceFile.fromFile(it)
+		}
+		
 		RefasterJsScanner scanner = new RefasterJsScanner()
 		scanner.loadRefasterJsTemplate(refasterJsTemplate.path)
 
@@ -52,8 +56,7 @@ class RefasterJSTask extends SourceTask {
 			checkSymbols: true,
 			checkTypes : true,
 			closurePass : true,
-			preserveGoogRequires : true,
-			acceptConstKeyword : true
+			preserveGoogRequires : true
 		]);
 		options.setWarningLevel(DiagnosticGroups.MISSING_REQUIRE, CheckLevel.ERROR);
 
@@ -62,7 +65,7 @@ class RefasterJSTask extends SourceTask {
 		def driverBuilder = new RefactoringDriver.Builder(scanner)
 		driverBuilder.withCompilerOptions(options)
 		if(includeDefaultExterns) {
-			def defaultExterns = CommandLineRunner.getDefaultExterns()
+			def defaultExterns = CommandLineRunner.getBuiltinExterns(options)
 			logger.info "using JS Default Externs:"
 			defaultExterns.each { logger.info "$it" }
 			driverBuilder.addExterns(defaultExterns )

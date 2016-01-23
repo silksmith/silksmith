@@ -7,12 +7,14 @@ import io.silksmith.bundling.task.SilkArchive;
 
 class SilkModuleCacheUtil {
 
-
-	public static final DEFAULT_BASE_LOCATION = "${System.properties['user.home']}/.silksmith/repo"
+	
 	public static final BASE_LOCATION_SYSTEM_PROPERTY_KEY ="silksmith.cacheLocation"
 
 	static def getBaseLocation() {
 
+		def userHome = System.properties['user.home']
+		
+		def DEFAULT_BASE_LOCATION = new File(userHome,".silksmith/repo").path
 		System.properties[BASE_LOCATION_SYSTEM_PROPERTY_KEY]?:DEFAULT_BASE_LOCATION
 	}
 	static def pathInCache(ResolvedArtifact resolvedArtifact) {
