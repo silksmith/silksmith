@@ -10,37 +10,44 @@ class SilkModuleCacheUtil {
 	
 	public static final BASE_LOCATION_SYSTEM_PROPERTY_KEY ="silksmith.cacheLocation"
 
-	static def getBaseLocation() {
+	static File getBaseLocation() {
 
 		def userHome = System.properties['user.home']
 		
-		def DEFAULT_BASE_LOCATION = new File(userHome,".silksmith/repo").path
-		System.properties[BASE_LOCATION_SYSTEM_PROPERTY_KEY]?:DEFAULT_BASE_LOCATION
+		if(System.properties[BASE_LOCATION_SYSTEM_PROPERTY_KEY]){
+		 return new File(System.properties[BASE_LOCATION_SYSTEM_PROPERTY_KEY])
+		}
+		return new File(userHome,".silksmith/repo");
 	}
-	static def pathInCache(ResolvedArtifact resolvedArtifact) {
+	static File pathInCache(ResolvedArtifact resolvedArtifact) {
 
 		pathInCache(resolvedArtifact.moduleVersion.id.group, resolvedArtifact.moduleVersion.id.name, resolvedArtifact.moduleVersion.id.version)
 	}
-	static def pathInCache(ModuleComponentIdentifier id) {
+	static File pathInCache(ModuleComponentIdentifier id) {
 		pathInCache(id.group,id.module,id.version)
 	}
-	static def pathInCache( group, name, version) {
-		"${getBaseLocation()}/$group/$name/$version"
+	static File pathInCache( group, name, version) {
+		return new File(getBaseLocation(),"$group/$name/$version")
 	}
-	static def pathInCache( group, name, version, type) {
-		"${pathInCache(group, name, version)}/$type"
+	static File pathInCache( group, name, version, type) {
+		return new File(pathInCache(group, name, version),type)
+		
 	}
 
-	static def externsPathInCache(ModuleComponentIdentifier id) {
-		"${pathInCache(id)}/$SilkArchive.EXTERNS_DIR"
+	static File externsPathInCache(ModuleComponentIdentifier id) {
+		return new File(pathInCache(id), SilkArchive.EXTERNS_DIR)
+		
 	}
-	static def jsPathInCache(ModuleComponentIdentifier id) {
-		"${pathInCache(id)}/$SilkArchive.JS_DIR"
+	static File jsPathInCache(ModuleComponentIdentifier id) {
+		return new File(pathInCache(id), SilkArchive.JS_DIR)
+		
 	}
-	static def staticsPathInCache(ModuleComponentIdentifier id) {
-		"${pathInCache(id)}/$SilkArchive.STATICS_DIR"
+	static File staticsPathInCache(ModuleComponentIdentifier id) {
+		return new File(pathInCache(id), SilkArchive.STATICS_DIR)
+		
 	}
-	static def scssPathInCache(ModuleComponentIdentifier id) {
-		"${pathInCache(id)}/$SilkArchive.SCSS_DIR"
+	static File scssPathInCache(ModuleComponentIdentifier id) {
+		return new File(pathInCache(id), SilkArchive.SCSS_DIR)
+		
 	}
 }

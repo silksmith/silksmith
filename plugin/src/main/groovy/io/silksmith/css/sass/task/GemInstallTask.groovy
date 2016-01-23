@@ -1,5 +1,7 @@
 package io.silksmith.css.sass.task
 
+import java.nio.file.Files;
+
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
@@ -7,6 +9,8 @@ import org.gradle.api.tasks.TaskAction
 import org.jruby.embed.LocalContextScope
 import org.jruby.embed.LocalVariableBehavior
 import org.jruby.embed.ScriptingContainer
+
+import io.silksmith.development.server.files.FilesHandler;
 
 class GemInstallTask extends DefaultTask {
 
@@ -29,7 +33,8 @@ class GemInstallTask extends DefaultTask {
 		println "installing gems into $gemInstallDir.path"
 		ScriptingContainer container = new ScriptingContainer(LocalContextScope.SINGLETHREAD, LocalVariableBehavior.PERSISTENT);
 		
-		def relativeInstallPath = project.relativePath(gemInstallDir)
+		def relativeInstallPath = project.relativePath(gemInstallDir).replace(File.separator, '/')
+		println "realtive gems into $relativeInstallPath"
 		container.environment = ['GEM_PATH':relativeInstallPath, 'GEM_HOME':relativeInstallPath]
 		//container.argv = sassArgs
 		

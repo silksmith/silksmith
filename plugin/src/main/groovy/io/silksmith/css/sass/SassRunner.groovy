@@ -29,15 +29,16 @@ class SassRunner implements CSSOutput {
 
 	File gemInstallDir
 
+	
 	def run(SassMode mode = SassMode.update) {
 
-
+		def relativeInstallPath = rubyPath(gemInstallDir)
 
 		//-I
 		def importPathsArgs = []
 
 		def inOuts = []
-		outputDir.parentFile.mkdirs()
+		outputDir.mkdirs()
 		importPathsArgs = configuration.incoming.resolutionResult.allComponents.collect({ ResolvedComponentResult rcr ->
 
 			sourceLookupService.get(rcr.id)
@@ -52,7 +53,7 @@ class SassRunner implements CSSOutput {
 				if(!it.exists()) {
 					return []
 				}
-				["-I", it.path]
+				["-I",rubyPath( it.path)]
 			})
 		}).grep().flatten()
 
@@ -70,7 +71,7 @@ class SassRunner implements CSSOutput {
 				if(!it.exists()) {
 					return []
 				}
-				"$it.path:$outputDir" })
+				"${rubyPath(it.path)}:${rubyPath(outputDir)}" })
 		}).grep().flatten()
 
 
@@ -94,7 +95,10 @@ opts = Sass::Exec::SassScss.new(ARGV, :scss)
 opts.parse!"""
 
 		ScriptingContainer container = new ScriptingContainer();
-		container.environment = ['GEM_PATH':gemInstallDir.path]
+		
+		
+		container.environment = ['GEM_PATH':relativeInstallPath, 'GEM_HOME':relativeInstallPath]
+		
 		container.argv = sassArgs
 		def scssResult = container.runScriptlet(scssScript)
 
@@ -104,5 +108,9 @@ opts.parse!"""
 	@Override
 	public File getOutput() {
 		return outputDir
+	}
+	
+	private rubyPath(path){
+		project.relativePath(path).replace(File.separator, '/')
 	}
 }
