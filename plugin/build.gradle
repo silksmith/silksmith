@@ -6,6 +6,8 @@ plugins {
 
 ext{
 	closureCompilerVersion = 'v20151216'
+	// waiting for release
+	// closureCompilerVersion = 'v20160208'
 	jettyVersion = '9.3.7.v20160115'
 }
 
