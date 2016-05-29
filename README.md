@@ -6,7 +6,7 @@ Compile your JS code with Google's Closure Compiler, generate CSS with SASS. Bui
 ##Concept
 - Package JS and SCSS
 - Compile JS (type checking)
-- Compile SSS
+- Compile Sass (scss)
 - Build-in Dev/Test server
 - Nothing needed on the build server, Gradle comes with everything (no node/npm/bower etc. must be installed or executed in the beginning)
 
