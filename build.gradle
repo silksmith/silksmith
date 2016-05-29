@@ -18,13 +18,11 @@ subprojects {
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
-	
+
 
 	version = "0.7.0-SNAPSHOT"
 	group = "io.silksmith"
 }
 
-task wrapper(type: Wrapper) {
-	gradleVersion ="2.11-rc-1"
-	distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
-}
+wrapper.gradleVersion = "2.13"
+//wrapper.distributionUrl = "http://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"

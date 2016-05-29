@@ -1,0 +1,38 @@
+plugins {
+	id "com.jfrog.bintray" version "1.2"
+	//id "com.jfrog.artifactory" version "3.1.1"
+	id "com.gradle.plugin-publish" version "0.9.4"
+}
+
+ext{
+	closureCompilerVersion = 'v20151216'
+	// waiting for release
+	// closureCompilerVersion = 'v20160208'
+	jettyVersion = '9.3.7.v20160115'
+}
+
+
+dependencies {
+	compile gradleApi()
+	compile localGroovy()
+	compile group: 'com.google.closure-stylesheets', name: 'closure-stylesheets', version: '20160212'
+
+}
+publishing {
+	publications {
+		maven(MavenPublication) { from components.java }
+	}
+	repositories {
+		maven {
+			name 'jcenterSnapshot'
+			// change to point to your repo, e.g. http://my.org/repo
+			url "http://oss.jfrog.org/artifactory/oss-snapshot-local"
+
+			credentials {
+
+				username = bintray_net_user
+				password = bintray_net_key
+			}
+		}
+	}
+}

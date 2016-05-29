@@ -20,3 +20,4 @@ rootProject.name = 'silksmith'
 
 include 'plugin'
 include 'extra-angular'
+include 'closure-stylesheets'
