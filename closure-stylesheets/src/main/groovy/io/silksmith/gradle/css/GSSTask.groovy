@@ -1,6 +1,6 @@
-package io.silksmith.gradle.css
 
-package io.silksmith.css.gss
+
+package io.silksmith.gradle.css
 
 import static java.nio.charset.StandardCharsets.UTF_8
 
@@ -37,6 +37,16 @@ import com.google.common.io.Files
 
 class GSSTask extends SourceTask {
 
+    public static interface SilksmithGssFunctionMapProvider extends  GssFunctionMapProvider, Serializable {}
+    public static class SilksmithDefaultGssFunctionMapProvider extends DefaultGssFunctionMapProvider implements SilksmithGssFunctionMapProvider {}
+
+    public static interface SilksmithSubstitutionMapProvider extends  SubstitutionMapProvider, Serializable {}
+    public static class SilksmithDefaultSubstitutionMapProvider  implements SilksmithSubstitutionMapProvider {
+        @Override
+        public SubstitutionMap get() {
+            return new SplittingSubstitutionMap(new MinimalSubstitutionMap());
+        }
+    }
     @Input
     @Optional
     def InputOrientation inputOrientation =  InputOrientation.LTR
@@ -77,24 +87,32 @@ class GSSTask extends SourceTask {
     def OutputRenamingMapFormat outputRenamingMapFormat = OutputRenamingMapFormat.JSON
 
     @Input
-    def SubstitutionMapProvider substitutionMapProvider = new SubstitutionMapProvider() {
-        @Override
-        public SubstitutionMap get() {
-            return new SplittingSubstitutionMap(new MinimalSubstitutionMap());
-        }
-    }
+    def SilksmithSubstitutionMapProvider substitutionMapProvider = new SilksmithDefaultSubstitutionMapProvider()
     @Input
-    def GssFunctionMapProvider gssFunctionMapProvider = new DefaultGssFunctionMapProvider()
+    def SilksmithGssFunctionMapProvider gssFunctionMapProvider = new SilksmithDefaultGssFunctionMapProvider()
 
+    @Optional
     @OutputFile
     def outputFile
+    @Optional
     @OutputFile
     def renameFile
-
+    @Optional
+    @OutputFile
+    def sourcemapFile
 
     @TaskAction
     def compile() {
 
+        if(outputFile){
+            outputFile.parentFile.mkdirs()
+        }
+        if(renameFile){
+            renameFile.parentFile.mkdirs()
+        }
+        if(sourcemapFile){
+            sourcemapFile.parentFile.mkdirs()
+        }
         ExitCodeHandler exitCodeHandler = new DefaultExitCodeHandler();
 
         CompilerErrorManager errorManager = new CompilerErrorManager();
@@ -103,15 +121,18 @@ class GSSTask extends SourceTask {
         DefaultCommandLineCompiler compiler = new DefaultCommandLineCompiler(
                 jobDescription, exitCodeHandler, errorManager);
 
-        compiler.compile();
-        String compilerOutput = compiler.execute(renameFile);
+        //compiler.compile();
+        println sourcemapFile
+        String compilerOutput = compiler.execute(renameFile,sourcemapFile);
 
 
         if (outputFile == null) {
             System.out.print(compilerOutput);
         } else {
+            outputFile.withWriter {
+                it << compilerOutput
+            }
 
-            outputFile.text << compilerOutput
         }
     }
     private JobDescription buildJobDescription() {
@@ -136,15 +157,15 @@ class GSSTask extends SourceTask {
         builder.setCssSubstitutionMapProvider(substitutionMapProvider);
         builder.setCssRenamingPrefix(cssRenamingPrefix);
         builder.setOutputRenamingMapFormat(outputRenamingMapFormat);
+        builder.setCreateSourceMap(true)
+
+
 
 
         builder.setGssFunctionMapProvider(gssFunctionMapProvider);
 
         source.collect( { File it ->
-
-
-
-            new SourceCode(it.path,content )
+            new SourceCode(it.path,it.text )
         }).each(builder.&addInput)
 
         return builder.getJobDescription();

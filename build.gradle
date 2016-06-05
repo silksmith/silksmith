@@ -1,23 +1,13 @@
 
 
 ext{
-	closureCompilerVersion = 'v20151216'
+	closureCompilerVersion = 'v20160517'
 	jettyVersion = '9.3.7.v20160115'
 }
 
 subprojects {
 	repositories { mavenCentral() }
 
-
-	apply plugin: 'groovy'
-	apply plugin: 'eclipse'
-	apply plugin: 'maven'
-	apply plugin: 'idea'
-	apply plugin: 'java'
-	apply plugin: 'maven-publish'
-
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
 
 
 	version = "0.7.0-SNAPSHOT"

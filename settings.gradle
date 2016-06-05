@@ -17,7 +17,9 @@ include 'services:webservice'
 */
 
 rootProject.name = 'silksmith'
-
+include 'tooling-model'
 include 'plugin'
 include 'extra-angular'
 include 'closure-stylesheets'
+include 'javascript'
+include 'anvil'

@@ -30,12 +30,14 @@ class ClosureStyleSheetsPlugin extends RuleSource {
 
     @BinaryTasks
     void processGSS(ModelMap<Task> tasks, final GSSBinary binary) {
-        binary.inputs.withType(GSSSourceSet) { markdownSourceSet ->
-            def taskName = binary.tasks.taskName("compile", markdownSourceSet.name)
-            def outputDir = new File(binary.outputDir, markdownSourceSet.name)
+        binary.inputs.withType(GSSSourceSet) { gssSourceSet ->
+            def taskName = binary.tasks.taskName("compile", gssSourceSet.name)
+            def outputDir = new File(binary.outputDir, gssSourceSet.name)
             tasks.create(taskName, GSSTask) { compileTask ->
-                compileTask.source = markdownSourceSet.source
-                compileTask.destinationDir = outputDir
+                compileTask.source = gssSourceSet.source
+                compileTask.outputFile = new File(outputDir,'style.css')
+                compileTask.renameFile = new File(outputDir,'mapping.json')
+                compileTask.sourcemapFile = new File(outputDir,'sourcemap.css.map')
             }
         }
     }

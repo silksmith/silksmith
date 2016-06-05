@@ -1,0 +1,20 @@
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+
+jar {
+	baseName = 'tooling-model'
+	version = '0.0.1-SNAPSHOT'
+}
+
+dependencies {
+    compile gradleApi()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}

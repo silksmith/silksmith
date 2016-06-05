@@ -1,20 +1,24 @@
-plugins {
-	id "com.jfrog.bintray" version "1.2"
-	//id "com.jfrog.artifactory" version "3.1.1"
-	id "com.gradle.plugin-publish" version "0.9.4"
-}
+
 apply plugin: 'groovy'
+apply plugin: 'maven-publish'
 repositories {
 	jcenter()
 }
 
 dependencies {
+	compile project(":tooling-model")
 	compile gradleApi()
 	compile localGroovy()
-	compile group: 'com.google.closure-stylesheets', name: 'closure-stylesheets', version: '20160212'
 	compile group: 'com.google.javascript', name: 'closure-compiler', version: 'v20160517'
 
 }
 //import io.silksmith.gradle.css.GSSComponent
 //import io.silksmith.gradle.css.GSSSourceSet
 
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+}

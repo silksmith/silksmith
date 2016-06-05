@@ -4,4 +4,4 @@ import org.gradle.model.Managed
 import org.gradle.platform.base.GeneralComponentSpec
 
 @Managed
-class GSSComponent extends GeneralComponentSpec {}
+interface GSSComponent extends GeneralComponentSpec {}

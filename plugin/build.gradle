@@ -3,9 +3,10 @@ plugins {
 	//id "com.jfrog.artifactory" version "3.1.1"
 	id "com.gradle.plugin-publish" version "0.9.3"
 }
-
+apply plugin: 'groovy'
+apply plugin: 'maven-publish'
 ext{
-	closureCompilerVersion = 'v20151216'
+	closureCompilerVersion = 'v20160517'
 	// waiting for release
 	// closureCompilerVersion = 'v20160208'
 	jettyVersion = '9.3.7.v20160115'
